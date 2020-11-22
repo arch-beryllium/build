@@ -20,6 +20,7 @@ function build_and_install_package() {
   build_package "$1"
   install_package "$(basename "$url" | sed "s/\.git//")"
 }
+build_and_install_package "https://github.com/jld3103/alsa-ucm-beryllium.git" &
 build_and_install_package "https://aur.archlinux.org/qrtr-git.git"
 for url in \
   "https://aur.archlinux.org/tqftpserv-git.git" \
