@@ -4,12 +4,12 @@ if [ "$(id -u)" -ne "0" ]; then
   exit 1
 fi
 
-set -e
+set -ex
 
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-export ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
-export TARBALL="build/$(basename $ROOTFS)"
+export ROOTFS="https://github.com/dreemurrs-embedded/Pine64-Arch/releases/download/20201112/archlinux-pinephone-20201112.img.xz"
+export BASEIMG="build/$(basename $ROOTFS | sed "s/\.xz//")"
 export DEST=$(mktemp -d)
 export LOOP_DEVICE=$(losetup -f)
 
@@ -24,7 +24,11 @@ cleanup() {
   fi
   umount "$DEST/dev" || true
   umount "$DEST/tmp" || true
-  finish_rootfsimg
+
+  umount -lc "$DEST"
+  rm -rf "$DEST"
+
+  losetup -d "$LOOP_DEVICE"
 }
 trap cleanup EXIT
 
@@ -60,72 +64,38 @@ function download_sources() {
   download_repo "pmaports" "https://gitlab.com/postmarketOS/pmaports.git/" "master" &
   download_repo "efidroid-build" "https://github.com/efidroid/build.git" "master" &
 
-  if [ ! -f "$TARBALL" ]; then
-    wget "$ROOTFS" -O "$TARBALL" &
+  if [ ! -f "$BASEIMG" ]; then
+    function download_baseimg() {
+      wget "$ROOTFS" -O "$BASEIMG.xz"
+      unxz "$BASEIMG.xz"
+    }
+    download_baseimg &
   fi
 
   wait
 }
 
 function setup_rootfsimg() {
-  rm "build/rootfs.img" -rf
-  fallocate -l 5000M "build/rootfs.img"
-  cat <<EOF | fdisk "build/rootfs.img"
-o
-n
-p
-
-
-
-t
-83
-a
-w
-EOF
+  cp "$BASEIMG" "build/rootfs.img"
+  dd if=/dev/zero bs=1M count=1024 >>"build/rootfs.img"
+  growpart "build/rootfs.img" 1
 
   losetup -P "$LOOP_DEVICE" "build/rootfs.img"
-
-  mkfs.ext4 "${LOOP_DEVICE}"p1
 
   mkdir -p "$DEST"
   mount "${LOOP_DEVICE}"p1 "$DEST"
 }
 
-function finish_rootfsimg() {
-  umount "$DEST"
-  rm -rf "$DEST"
-
-  losetup -d "$LOOP_DEVICE"
-}
-
 function build_rootfs() {
-  tar --use-compress-program=pigz --same-owner -xpf "$TARBALL" -C "$DEST"
-
   rm -rf "$DEST/etc/resolv.conf"
   printf "nameserver 8.8.8.8\nnameserver 8.8.4.4" >"$DEST/etc/resolv.conf"
-  sed -i 's|CheckSpace|#CheckSpace|' "$DEST/etc/pacman.conf"
 
-  cat >>"$DEST/etc/pacman.conf" <<EOF
-[danctnix]
-SigLevel = Never
-Server = https://p64.arikawa-hi.me/danctnix/aarch64/
-[pine64]
-SigLevel = Never
-Server = https://p64.arikawa-hi.me/pine64/aarch64/
-[phosh]
-SigLevel = Never
-Server = https://p64.arikawa-hi.me/phosh/aarch64/
-EOF
+  sed -i "s/DT_MODEL=\$(< \/sys\/firmware\/devicetree\/base\/model)/DT_MODEL=\"PinePhone\"/" "$DEST/usr/local/sbin/first_time_setup.sh"
 
   cp on_device_scripts/install.sh "$DEST/install"
   chmod +x "$DEST/install"
   do_chroot /install
   rm "$DEST/install"
-
-  cp on_device_scripts/change_password.sh "$DEST/change_password"
-  chmod +x "$DEST/change_password"
-  do_chroot /change_password
-  rm "$DEST/change_password"
 
   cp build/firmware-xiaomi-beryllium/lib/firmware "$DEST/usr/lib" -r
 
@@ -148,7 +118,7 @@ CONFIG_USB_DWC2=y
 EOF
 
   # Build kernel
-  MAKEFLAGS="-j$(nproc --all)" make beryllium_defconfig Image.gz headers modules dtbs
+  MAKEFLAGS="-j$(nproc --all)" make beryllium_defconfig Image.gz modules dtbs
   cat arch/arm64/boot/Image.gz arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dtb >arch/arm64/boot/.Image.gz-dtb
 
   # Install kernel into rootfs
@@ -156,8 +126,6 @@ EOF
   export INSTALL_PATH="$DEST/boot"
   export INSTALL_MOD_PATH="$DEST/usr"
   make zinstall modules_install
-
-  cd ../..
 }
 
 function build_initramfs() {
@@ -198,4 +166,3 @@ wait
 
 build_initramfs
 build_bootimg
-finish_rootfsimg

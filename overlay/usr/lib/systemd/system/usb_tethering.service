@@ -1,9 +1,0 @@
-[Unit]
-Description=USB tethering
-Before=dhcpd4.service
-
-[Service]
-ExecStart=/usr/local/sbin/usb_tethering.sh
-
-[Install]
-WantedBy=multi-user.target

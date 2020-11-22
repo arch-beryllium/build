@@ -1,43 +1,45 @@
 #!/bin/bash
 set -ex
-pacman-key --init
-pacman-key --populate archlinuxarm
-killall -KILL gpg-agent
 pacman -Sy
-pacman -Rdd --noconfirm linux-aarch64
+pacman -Rdd --noconfirm linux-pine64
+pacman -Rns --noconfirm device-pine64-pinephone uboot-pinephone rtl8723bt-firmware ov5640-firmware danctnix-eg25-misc anx7688-firmware
 pacman -Su --noconfirm --overwrite=*
-pacman -S --noconfirm --needed --overwrite=* mkinitcpio fakeroot binutils git dhcp sudo bluez bluez-utils bluez-libs wireless-regdb
-pacman -S --noconfirm --needed --overwrite=* curl xz iw rfkill netctl dialog wpa_supplicant pv networkmanager bootsplash-theme-danctnix v4l-utils
-pacman -S --noconfirm --needed --overwrite=* danctnix-phosh-ui-meta flashlight xdg-user-dirs noto-fonts-emoji
-pacman -S --noconfirm --needed --overwrite=* gedit evince-mobile mobile-config-firefox gnome-calculator gnome-clocks gnome-maps gnome-usage-mobile gtherm geary-mobile purple-matrix purple-telegram
-
-usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
+pacman -S --noconfirm --needed --overwrite=* fakeroot binutils git make gcc linux-aarch64-headers bluez-utils wireless-regdb danctnix-usb-tethering
 
 ln -sf /usr/bin/gcc /usr/bin/aarch64-linux-gnu-gcc
-su alarm -s /bin/bash -c "cd /home/alarm && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg"
-pacman -U /home/alarm/yay-bin/*.pkg* --noconfirm
-rm /home/alarm/yay-bin -rf
-sed -i "s/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
-su alarm -s /bin/bash -c "yay -S qrtr-git --noconfirm"
-su alarm -s /bin/bash -c "yay -S tqftpserv-git rmtfs-git pd-mapper-git --noconfirm"
-sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
-sed -i "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /etc/sudoers
+cd /home/alarm
+function build_package() {
+  url=$1
+  dir=$(basename "$url" | sed "s/\.git//")
+  su alarm -s /bin/bash -c "git clone --depth=1 $url && cd $dir && MAKEFLAGS=-j$(nproc --all) makepkg"
+}
+function install_package() {
+  pacman -U /home/alarm/"$1"/*.pkg* --noconfirm
+}
+function build_and_install_package() {
+  build_package "$1"
+  install_package "$(basename "$url" | sed "s/\.git//")"
+}
+build_and_install_package "https://aur.archlinux.org/qrtr-git.git"
+for url in \
+  "https://aur.archlinux.org/tqftpserv-git.git" \
+  "https://aur.archlinux.org/rmtfs-git.git" \
+  "https://aur.archlinux.org/pd-mapper-git.git"; do
+  build_package "$url" &
+done
+wait
+for package in \
+  "tqftpserv-git" \
+  "rmtfs-git" \
+  "pd-mapper-git"; do
+  install_package "$package"
+done
 
-systemctl disable systemd-networkd
-systemctl disable systemd-resolved
-systemctl enable dhcpd4
-systemctl enable NetworkManager
-systemctl enable bluetooth
-systemctl enable phosh
+systemctl enable sshd
+systemctl enable usb-tethering
 systemctl enable qrtr-ns
 systemctl enable tqftpserv
 systemctl enable rmtfs
 systemctl enable pd-mapper
-
-sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
-cd /usr/share/i18n/charmaps
-gzip -d UTF-8.gz
-locale-gen
-gzip UTF-8
 
 yes | pacman -Scc

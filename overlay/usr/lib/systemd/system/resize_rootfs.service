@@ -1,8 +1,0 @@
-[Unit]
-Description=Resize rootfs
-
-[Service]
-ExecStart=/usr/local/sbin/resize_rootfs.sh
-
-[Install]
-WantedBy=multi-user.target

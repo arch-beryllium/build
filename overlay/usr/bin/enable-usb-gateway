@@ -1,2 +1,2 @@
 #!/bin/bash
-route add default gw 10.0.0.10
+sudo route add default gw 10.15.19.100

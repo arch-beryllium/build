@@ -6,4 +6,4 @@ fi
 
 sysctl net.ipv4.ip_forward=1
 iptables -P FORWARD ACCEPT
-iptables -A POSTROUTING -t nat -j MASQUERADE -s 10.0.0.0/24
+iptables -A POSTROUTING -t nat -j MASQUERADE -s 10.15.19.0/24
