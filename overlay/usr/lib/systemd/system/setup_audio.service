@@ -1,0 +1,8 @@
+[Unit]
+Description=Setup audio
+
+[Service]
+ExecStart=/usr/local/sbin/setup_audio.sh
+
+[Install]
+WantedBy=multi-user.target
