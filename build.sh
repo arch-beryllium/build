@@ -92,6 +92,12 @@ function build_rootfs() {
 
   sed -i "s/DT_MODEL=\$(< \/sys\/firmware\/devicetree\/base\/model)/DT_MODEL=\"PinePhone\"/" "$DEST/usr/local/sbin/first_time_setup.sh"
 
+  cat >>"$DEST/etc/pacman.conf" <<EOF
+[beryllium]
+SigLevel = Never
+Server = https://repo.lohl1kohl.de/beryllium/aarch64/
+EOF
+
   cp on_device_scripts/install.sh "$DEST/install"
   chmod +x "$DEST/install"
   do_chroot /install
