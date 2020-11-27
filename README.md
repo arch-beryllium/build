@@ -55,5 +55,5 @@ Host side:
 Device side:
 
 ```bash
-$ enable-usb-gateway
+sudo route add default gw 10.15.19.100
 ```
