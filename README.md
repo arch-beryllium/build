@@ -64,7 +64,7 @@ sudo route add default gw 10.15.19.100
 Install and setup Anbox:
 
 ```bash
-sudo pacman -S anbox anbox-image-aarch64
+sudo pacman -S anbox anbox-image-aarch64 android-tools
 sudo systemctl enable --now anbox-container-manager
 systemctl enable --now --user anbox-session-manager
 ```
