@@ -11,7 +11,8 @@ Currently, you can only boot from the SD card, but adding support for internal m
 ./build.sh
 ```
 
-This will take a long time (about 25 minutes for on subsequent runs), but it will be optimized in the future.
+To speed up package downloads you can use the `LOCAL_MIRROR` environment variable with and value
+like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/jld3103/arch-repo-mirror as local mirror tool.
 
 # Flashing onto SD card
 

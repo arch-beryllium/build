@@ -77,8 +77,6 @@ function download_sources() {
 
 function setup_rootfsimg() {
   cp "$BASEIMG" "build/rootfs.img"
-  dd if=/dev/zero bs=1M count=1024 >>"build/rootfs.img"
-  growpart "build/rootfs.img" 1
 
   losetup -P "$LOOP_DEVICE" "build/rootfs.img"
 
@@ -93,10 +91,16 @@ function build_rootfs() {
   sed -i "s/DT_MODEL=\$(< \/sys\/firmware\/devicetree\/base\/model)/DT_MODEL=\"PinePhone\"/" "$DEST/usr/local/sbin/first_time_setup.sh"
 
   cat >>"$DEST/etc/pacman.conf" <<EOF
+
 [beryllium]
 SigLevel = Never
 Server = https://repo.lohl1kohl.de/beryllium/aarch64/
 EOF
+
+  if [ -n "$LOCAL_MIRROR" ]; then
+    sed -i "s/Server = .*/Include = \/etc\/pacman\.d\/mirrorlist/" "$DEST/etc/pacman.conf"
+    echo "Server = $LOCAL_MIRROR" >"$DEST/etc/pacman.d/mirrorlist"
+  fi
 
   cat >"$DEST/install" <<EOF
 #!/bin/bash
