@@ -141,6 +141,9 @@ function build_kernel() {
 
 #USB drivers
 CONFIG_USB_DWC2=y
+
+#Anbox (This may not be needed, but the wiki advises to do so)
+CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"
 EOF
 
   # Build kernel

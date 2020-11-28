@@ -58,3 +58,15 @@ Device side:
 ```bash
 sudo route add default gw 10.15.19.100
 ```
+
+# Anbox
+
+Install and setup Anbox:
+
+```bash
+sudo pacman -S anbox anbox-image-aarch64
+sudo systemctl enable --now anbox-container-manager
+systemctl enable --now --user anbox-session-manager
+```
+
+and then reboot.
