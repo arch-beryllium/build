@@ -80,6 +80,8 @@ function setup_rootfsimg() {
 
   losetup -P "$LOOP_DEVICE" "build/rootfs.img"
 
+  e2label "$LOOP_DEVICE"p1 ALARM
+
   mkdir -p "$DEST"
   mount "${LOOP_DEVICE}"p1 "$DEST"
 }
@@ -183,7 +185,7 @@ function build_bootimg() {
     --ramdisk_offset "$(grep "offset_ramdisk" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --tags_offset "$(grep "offset_tags" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --pagesize "$(grep "pagesize" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
-    --cmdline "root=/dev/mmcblk0p1 rw" \
+    --cmdline "root=LABEL=ALARM rw" \
     -o build/boot.img
 }
 
