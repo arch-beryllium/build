@@ -99,6 +99,8 @@ SigLevel = Never
 Server = https://repo.lohl1kohl.de/beryllium/aarch64/
 EOF
 
+  sed -i "s/#IgnorePkg   =/IgnorePkg   = libpulse pulseaudio pulseaudio-bluetooth alsa-card-profiles/" "$DEST/etc/pacman.conf"
+
   if [ -n "$LOCAL_MIRROR" ]; then
     sed -i "s/Server = .*/Include = \/etc\/pacman\.d\/mirrorlist/" "$DEST/etc/pacman.conf"
     echo "Server = $LOCAL_MIRROR" >"$DEST/etc/pacman.d/mirrorlist"
