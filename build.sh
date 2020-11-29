@@ -8,7 +8,7 @@ set -ex
 
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-export ROOTFS="https://github.com/dreemurrs-embedded/Pine64-Arch/releases/download/20201112/archlinux-pinephone-20201112.img.xz"
+export ROOTFS="https://github.com/dreemurrs-embedded/Pine64-Arch/releases/download/20201129/archlinux-pinephone-20201129.img.xz"
 export BASEIMG="build/$(basename $ROOTFS | sed "s/\.xz//")"
 export DEST=$(mktemp -d)
 export LOOP_DEVICE=$(losetup -f)
@@ -98,8 +98,6 @@ function build_rootfs() {
 SigLevel = Never
 Server = https://repo.lohl1kohl.de/beryllium/aarch64/
 EOF
-
-  sed -i "s/#IgnorePkg   =/IgnorePkg   = libpulse pulseaudio pulseaudio-bluetooth alsa-card-profiles/" "$DEST/etc/pacman.conf"
 
   if [ -n "$LOCAL_MIRROR" ]; then
     sed -i "s/Server = .*/Include = \/etc\/pacman\.d\/mirrorlist/" "$DEST/etc/pacman.conf"
