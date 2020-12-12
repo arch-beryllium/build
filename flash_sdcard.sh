@@ -1,6 +1,7 @@
 #!/bin/bash
-if [ "$#" -ne 1 ]; then
-  echo "Usage: flash_sdcard.sh <device>"
+if [ "$#" -ne 2 ]; then
+  echo "Usage: flash_sdcard.sh <image name> <device>"
+  echo "Image names: phosh, plasma-mobile"
   exit 1
 fi
 
@@ -9,4 +10,4 @@ if [ "$(id -u)" -ne "0" ]; then
   exit 1
 fi
 
-dd if=./build/rootfs.img of="$1" status=progress iflag=direct oflag=direct bs=10M
+dd if="./build/rootfs-$1.img" of="$2" status=progress iflag=direct oflag=direct bs=10M

@@ -1,0 +1,24 @@
+#!/usr/bin/ash
+
+run_hook() {
+  DEVICE=$(resolve_device "$root" | sed 's/..$//')
+  echo "The current storage device is $DEVICE"
+
+  start=$(fdisk -l "${DEVICE}" | grep "${DEVICE}"p1 | sed 's/*//' | awk '{print $2}')
+  echo "Rootfs start sector is $start"
+
+  fdisk "${DEVICE}" <<EOF
+p
+d
+
+n
+p
+
+$start
+
+w
+EOF
+
+  partx -u "${DEVICE}"
+  resize.f2fs "${DEVICE}"p1
+}

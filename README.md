@@ -7,12 +7,16 @@ Currently, you can only boot from the SD card, but adding support for internal m
 
 # Building
 
+To speed up package downloads you can use the `LOCAL_MIRROR` environment variable with and value
+like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/jld3103/arch-repo-mirror as local mirror tool.  
+Without it, you will probably wait for hours on every build, so it's highly recommended.
+
 ```bash
-./build.sh
+./build.sh phosh
+./build.sh plasma-mobile
 ```
 
-To speed up package downloads you can use the `LOCAL_MIRROR` environment variable with and value
-like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/jld3103/arch-repo-mirror as local mirror tool.
+If you only want to rebuild the kernel, initramfs and boot.img you can append `-bootimg` to the image name.
 
 # Flashing onto SD card
 
@@ -20,7 +24,8 @@ You need at least an 8 GB SD card, but more is better.
 Everything on the SD card will be deleted so watch out what you are doing.
 
 ```bash
-./flash_sdcard.sh /dev/sdX
+./flash_sdcard.sh phosh /dev/sdX
+./flash_sdcard.sh plasma-mobile /dev/sdX
 ```
 
 # Running

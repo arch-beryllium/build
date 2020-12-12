@@ -1,4 +1,195 @@
 #!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: build.sh <target>"
+  echo "Targets: phosh, plasma-mobile, phosh-bootimg, plasma-mobile-bootimg"
+  exit 1
+fi
+
+if [ "$1" = "phosh" ]; then
+  export IMAGE_NAME="phosh"
+elif [ "$1" = "plasma-mobile" ]; then
+  export IMAGE_NAME="plasma-mobile"
+elif [ "$1" = "phosh-bootimg" ]; then
+  export IMAGE_NAME="phosh"
+  export ONLY_BOOTIMG=1
+elif [ "$1" = "plasma-mobile-bootimg" ]; then
+  export IMAGE_NAME="plasma-mobile"
+  export ONLY_BOOTIMG=1
+else
+  echo "Unknown target: $*"
+  exit 1
+fi
+
+if [ "$IMAGE_NAME" = "phosh" ]; then
+  export IMAGE_SIZE=5120
+  export EXTRA_PACKAGES=()
+  EXTRA_PACKAGES+=("danctnix-phosh-ui-meta")
+  EXTRA_PACKAGES+=("dialog")
+  EXTRA_PACKAGES+=("evince-mobile")
+  EXTRA_PACKAGES+=("firefox")
+  EXTRA_PACKAGES+=("geary-mobile")
+  EXTRA_PACKAGES+=("gedit")
+  EXTRA_PACKAGES+=("gnome-calculator")
+  EXTRA_PACKAGES+=("gnome-clocks")
+  EXTRA_PACKAGES+=("gnome-maps")
+  EXTRA_PACKAGES+=("gnome-usage-mobile")
+  EXTRA_PACKAGES+=("gst-plugins-good")
+  EXTRA_PACKAGES+=("gtherm")
+  EXTRA_PACKAGES+=("lollypop")
+  EXTRA_PACKAGES+=("megapixels")
+  EXTRA_PACKAGES+=("mesa-git")
+  EXTRA_PACKAGES+=("mobile-config-firefox")
+  EXTRA_PACKAGES+=("mpg123")
+  EXTRA_PACKAGES+=("noto-fonts-emoji")
+  EXTRA_PACKAGES+=("purple-matrix")
+  EXTRA_PACKAGES+=("purple-telegram")
+  EXTRA_PACKAGES+=("pv")
+  EXTRA_PACKAGES+=("twolame")
+  EXTRA_PACKAGES+=("wavpack")
+  export POST_SCRIPT=$(
+    cat <<EOF
+printf "[device]\nwifi.scan-rand-mac-address=no" > /etc/NetworkManager/conf.d/disable-random-mac.conf
+printf "[Settings]\ngtk-application-prefer-dark-theme=1" > /etc/gtk-3.0/settings.ini
+systemctl enable phosh
+EOF
+  )
+fi
+if [ "$IMAGE_NAME" = "plasma-mobile" ]; then
+  export IMAGE_SIZE=5120
+  export EXTRA_PACKAGES=()
+  EXTRA_PACKAGES+=("accounts-qml-module")
+  EXTRA_PACKAGES+=("adwaita-icon-theme")
+  EXTRA_PACKAGES+=("bluedevil-git")
+  EXTRA_PACKAGES+=("bluez-qt-git")
+  EXTRA_PACKAGES+=("buho-git")
+  EXTRA_PACKAGES+=("calindori-git")
+  EXTRA_PACKAGES+=("desktop-file-utils")
+  EXTRA_PACKAGES+=("discover-git")
+  EXTRA_PACKAGES+=("enchant")
+  EXTRA_PACKAGES+=("firefox")
+  EXTRA_PACKAGES+=("flashlight")
+  EXTRA_PACKAGES+=("flatpak")
+  EXTRA_PACKAGES+=("git")
+  EXTRA_PACKAGES+=("groff")
+  EXTRA_PACKAGES+=("hdparm")
+  EXTRA_PACKAGES+=("iio-sensor-proxy")
+  EXTRA_PACKAGES+=("index-git")
+  EXTRA_PACKAGES+=("kaccounts-integration-git")
+  EXTRA_PACKAGES+=("kaccounts-providers-git")
+  EXTRA_PACKAGES+=("kalk-git")
+  EXTRA_PACKAGES+=("kcalendarcore-git")
+  EXTRA_PACKAGES+=("kclock-git")
+  EXTRA_PACKAGES+=("kcontacts-git")
+  EXTRA_PACKAGES+=("keysmith-git")
+  EXTRA_PACKAGES+=("kio-extras-git")
+  EXTRA_PACKAGES+=("kongress-git")
+  EXTRA_PACKAGES+=("kpeoplesink-git")
+  EXTRA_PACKAGES+=("kpeoplevcard-git")
+  EXTRA_PACKAGES+=("kplotting-git")
+  EXTRA_PACKAGES+=("kquicksyntaxhighlighter-git")
+  EXTRA_PACKAGES+=("krecorder-git")
+  EXTRA_PACKAGES+=("kscreen-git")
+  EXTRA_PACKAGES+=("kwallet-pam-git")
+  EXTRA_PACKAGES+=("kweather-git")
+  EXTRA_PACKAGES+=("libofono-qt")
+  EXTRA_PACKAGES+=("lsb-release")
+  EXTRA_PACKAGES+=("maliit-framework-git")
+  EXTRA_PACKAGES+=("maliit-keyboard-git")
+  EXTRA_PACKAGES+=("man-db")
+  EXTRA_PACKAGES+=("man-pages")
+  EXTRA_PACKAGES+=("megapixels")
+  EXTRA_PACKAGES+=("mobile-config-firefox")
+  EXTRA_PACKAGES+=("modemmanager-qt-git")
+  EXTRA_PACKAGES+=("mplus-font")
+  EXTRA_PACKAGES+=("ncdu")
+  EXTRA_PACKAGES+=("networkmanager-qt-git")
+  EXTRA_PACKAGES+=("nota-git")
+  EXTRA_PACKAGES+=("noto-fonts-emoji")
+  EXTRA_PACKAGES+=("ntfs-3g")
+  EXTRA_PACKAGES+=("ofonoctl")
+  EXTRA_PACKAGES+=("okular-mobile-git")
+  EXTRA_PACKAGES+=("packagekit")
+  EXTRA_PACKAGES+=("packagekit-qt5")
+  EXTRA_PACKAGES+=("plasma-angelfish-git")
+  EXTRA_PACKAGES+=("plasma-dialer-git")
+  EXTRA_PACKAGES+=("plasma-mobile-nm-git")
+  EXTRA_PACKAGES+=("plasma-mobile-settings")
+  EXTRA_PACKAGES+=("plasma-nano-git")
+  EXTRA_PACKAGES+=("plasma-pa-git")
+  EXTRA_PACKAGES+=("plasma-phone-components-git")
+  EXTRA_PACKAGES+=("plasma-phonebook-git")
+  EXTRA_PACKAGES+=("plasma-pix-git")
+  EXTRA_PACKAGES+=("plasma-settings-git")
+  EXTRA_PACKAGES+=("plasma-wayland-protocols-git")
+  EXTRA_PACKAGES+=("polkit-kde-agent-git")
+  EXTRA_PACKAGES+=("powerdevil-git")
+  EXTRA_PACKAGES+=("presage-git")
+  EXTRA_PACKAGES+=("psensor")
+  EXTRA_PACKAGES+=("pulseaudio")
+  EXTRA_PACKAGES+=("pulseaudio-bluetooth")
+  EXTRA_PACKAGES+=("qmlkonsole-git")
+  EXTRA_PACKAGES+=("qmltermwidget")
+  EXTRA_PACKAGES+=("qt5-base")
+  EXTRA_PACKAGES+=("qt5-charts")
+  EXTRA_PACKAGES+=("qt5-declarative")
+  #EXTRA_PACKAGES+=("qt5-es2-base")
+  #EXTRA_PACKAGES+=("qt5-es2-declarative")
+  #EXTRA_PACKAGES+=("qt5-es2-multimedia")
+  #EXTRA_PACKAGES+=("qt5-es2-wayland")
+  EXTRA_PACKAGES+=("qt5-feedback")
+  EXTRA_PACKAGES+=("qt5-graphicaleffects")
+  EXTRA_PACKAGES+=("qt5-imageformats")
+  EXTRA_PACKAGES+=("qt5-multimedia")
+  EXTRA_PACKAGES+=("qt5-pim-git")
+  EXTRA_PACKAGES+=("qt5-quickcontrols")
+  EXTRA_PACKAGES+=("qt5-quickcontrols2")
+  EXTRA_PACKAGES+=("qt5-script")
+  EXTRA_PACKAGES+=("qt5-sensors")
+  EXTRA_PACKAGES+=("qt5-tools")
+  EXTRA_PACKAGES+=("qt5-translations")
+  EXTRA_PACKAGES+=("qt5-virtualkeyboard")
+  EXTRA_PACKAGES+=("qt5-wayland")
+  EXTRA_PACKAGES+=("qt5-websockets")
+  EXTRA_PACKAGES+=("qt5-webview")
+  EXTRA_PACKAGES+=("sddm")
+  EXTRA_PACKAGES+=("signon-kwallet-extension-git")
+  EXTRA_PACKAGES+=("signon-plugin-oauth2")
+  EXTRA_PACKAGES+=("signon-ui")
+  EXTRA_PACKAGES+=("signond")
+  EXTRA_PACKAGES+=("spacebar-git")
+  EXTRA_PACKAGES+=("telegram-desktop")
+  EXTRA_PACKAGES+=("telepathy-mission-control")
+  EXTRA_PACKAGES+=("telepathy-ofono")
+  EXTRA_PACKAGES+=("tlp")
+  EXTRA_PACKAGES+=("usbutils")
+  EXTRA_PACKAGES+=("vim")
+  EXTRA_PACKAGES+=("vte3")
+  EXTRA_PACKAGES+=("vvave-git")
+  EXTRA_PACKAGES+=("wget")
+  EXTRA_PACKAGES+=("xdg-desktop-portal-kde")
+  export PRE_SCRIPT=$(
+    cat <<EOF
+  sed -i "s/#\[plasma-mobile\]/\[plasma-mobile\]/" /etc/pacman.conf
+  sed -i "s/#Server = https:\/\/repo.lohl1kohl.de\/plasma-mobile\/aarch64\//Server = https:\/\/repo.lohl1kohl.de\/plasma-mobile\/aarch64\//" /etc/pacman.conf
+  sed -i "s/#Include = \/etc\/pacman.d\/mirrorlist/Include = \/etc\/pacman.d\/mirrorlist/" /etc/pacman.conf
+EOF
+  )
+  export POST_SCRIPT=$(
+    cat <<EOF
+sed -i "s/kde/alarm/" /etc/sddm.conf
+sed -i "s/EnableHiDPI=false/EnableHiDPI=true/g" /etc/sddm.conf
+systemctl enable sddm
+
+cp -r /etc/skel/.config /home/alarm/
+cp /etc/xdg/applications-blacklistrc /home/alarm/.config/
+cp /etc/xdg/kdeglobals /home/alarm/.config/
+cp /etc/xdg/kwinrc /home/alarm/.config/
+chown alarm:alarm /home/alarm/.config/ -R
+EOF
+  )
+fi
+
 if [ "$(id -u)" -ne "0" ]; then
   echo "This script requires root."
   exit 1
@@ -6,12 +197,11 @@ fi
 
 set -ex
 
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
-export ROOTFS="https://github.com/dreemurrs-embedded/Pine64-Arch/releases/download/20201129/archlinux-pinephone-20201129.img.xz"
-export BASEIMG="build/$(basename $ROOTFS | sed "s/\.xz//")"
+export ROOTFS="https://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+export TARBALL="build/$(basename $ROOTFS)"
 export DEST=$(mktemp -d)
 export LOOP_DEVICE=$(losetup -f)
+export ROOTFSIMG="build/rootfs-$IMAGE_NAME.img"
 
 mkdir -p build
 
@@ -25,24 +215,24 @@ cleanup() {
   umount "$DEST/dev" || true
   umount "$DEST/tmp" || true
 
-  umount -lc "$DEST"
-  rm -rf "$DEST"
+  umount -lc "$DEST" || true
+  rm -rf "$DEST" || true
 
-  losetup -d "$LOOP_DEVICE"
+  losetup -d "$LOOP_DEVICE" || true
 }
 trap cleanup EXIT
 
 do_chroot() {
   cmd="$*"
-  mount -o bind /tmp "$DEST/tmp"
   mount -o bind /dev "$DEST/dev"
   chroot "$DEST" mount -t proc proc /proc || true
   chroot "$DEST" mount -t sysfs sys /sys || true
+  chroot "$DEST" mount -t tmpfs none /tmp || true
   chroot "$DEST" "$cmd"
+  chroot "$DEST" umount /tmp
   chroot "$DEST" umount /sys
   chroot "$DEST" umount /proc
   umount "$DEST/dev"
-  umount "$DEST/tmp"
 }
 
 set -ex
@@ -64,70 +254,121 @@ function download_sources() {
   download_repo "pmaports" "https://gitlab.com/postmarketOS/pmaports.git/" "master" &
   download_repo "efidroid-build" "https://github.com/efidroid/build.git" "master" &
 
-  if [ ! -f "$BASEIMG" ]; then
-    function download_baseimg() {
-      wget "$ROOTFS" -O "$BASEIMG.xz"
-      unxz "$BASEIMG.xz"
-    }
-    download_baseimg &
+  if [ ! -f "$TARBALL" ]; then
+    wget "$ROOTFS" -O "$TARBALL" &
   fi
 
   wait
 }
 
-function setup_rootfsimg() {
-  cp "$BASEIMG" "build/rootfs.img"
+function setup_clean_rootfs() {
+  rm -f "$ROOTFSIMG"
+  fallocate -l "${IMAGE_SIZE}"M "$ROOTFSIMG"
+  cat <<EOF | fdisk "$ROOTFSIMG"
+o
+n
+p
 
-  losetup -P "$LOOP_DEVICE" "build/rootfs.img"
 
-  e2label "$LOOP_DEVICE"p1 ALARM
 
-  mkdir -p "$DEST"
+t
+83
+a
+w
+EOF
+
+  losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
+  mkfs.f2fs -l ALARM "${LOOP_DEVICE}"p1
+  mount "${LOOP_DEVICE}"p1 "$DEST"
+}
+
+function setup_dirty_rootfs() {
+  if [ ! -f "$ROOTFSIMG" ]; then
+    echo "You need to already have built a rootfs to use it"
+    echo "Run build_phosh.sh or build_plasma_mobile.sh first"
+    exit 1
+  fi
+  losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
   mount "${LOOP_DEVICE}"p1 "$DEST"
 }
 
 function build_rootfs() {
+  tar --use-compress-program=pigz --same-owner -xpf "$TARBALL" -C "$DEST"
+
   rm -rf "$DEST/etc/resolv.conf"
-  printf "nameserver 8.8.8.8\nnameserver 8.8.4.4" >"$DEST/etc/resolv.conf"
 
-  sed -i "s/DT_MODEL=\$(< \/sys\/firmware\/devicetree\/base\/model)/DT_MODEL=\"PinePhone\"/" "$DEST/usr/local/sbin/first_time_setup.sh"
-
-  cat >>"$DEST/etc/pacman.conf" <<EOF
-
-[beryllium]
-SigLevel = Never
-Server = https://repo.lohl1kohl.de/beryllium/aarch64/
-EOF
+  cp overlay/* "$DEST" -r
 
   if [ -n "$LOCAL_MIRROR" ]; then
+    cp "$DEST/etc/pacman.conf" "$DEST/etc/pacman.conf.bak"
+    cp "$DEST/etc/pacman.d/mirrorlist" "$DEST/etc/pacman.d/mirrorlist.bak"
     sed -i "s/Server = .*/Include = \/etc\/pacman\.d\/mirrorlist/" "$DEST/etc/pacman.conf"
-    echo "Server = $LOCAL_MIRROR" >"$DEST/etc/pacman.d/mirrorlist"
+    printf "Server = %s" "$LOCAL_MIRROR" >"$DEST/etc/pacman.d/mirrorlist"
   fi
 
   cat >"$DEST/install" <<EOF
 #!/bin/bash
 set -ex
-pacman -Sy
-pacman -Rdd --noconfirm linux-pine64
-pacman -Rns --noconfirm device-pine64-pinephone uboot-pinephone rtl8723bt-firmware ov5640-firmware danctnix-eg25-misc anx7688-firmware
+
+$PRE_SCRIPT
+
+pacman -Syy
+pacman -Rdd --noconfirm linux-aarch64 linux-firmware # We supply our own kernel (trough boot.img) and firmware
 pacman -Su --noconfirm --overwrite=*
-pacman -S --noconfirm --needed --overwrite=* bluez-utils alsa-utils wireless-regdb danctnix-usb-tethering alsa-ucm-beryllium qrtr-git tqftpserv-git rmtfs-git pd-mapper-git
+pacman -S --noconfirm --needed --overwrite=* \
+  f2fs-tools \
+  bluez-libs \
+  bluez-utils \
+  alsa-utils \
+  wireless-regdb \
+  danctnix-usb-tethering \
+  danctnix-tweaks \
+  alsa-ucm-beryllium \
+  qrtr-git \
+  tqftpserv-git \
+  rmtfs-git \
+  pd-mapper-git \
+  iw \
+  networkmanager \
+  wpa_supplicant \
+  sudo \
+  xdg-user-dirs \
+  mesa-git \
+  $(printf " %s" "${EXTRA_PACKAGES[@]}")
 yes | pacman -Scc
+
+usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
+sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+echo "alarm:123456" | chpasswd
+
+sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
+cd /usr/share/i18n/charmaps
+gzip -d UTF-8.gz
+locale-gen
+gzip UTF-8
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 systemctl enable sshd
 systemctl enable usb-tethering
+systemctl enable NetworkManager
+systemctl enable ModemManager
+systemctl enable bluetooth
 systemctl enable qrtr-ns
 systemctl enable tqftpserv
 systemctl enable rmtfs
 systemctl enable pd-mapper
+
+$POST_SCRIPT
+
+pacman -Q | cut -f 1 -d " " > /packages
 EOF
   chmod +x "$DEST/install"
   do_chroot /install
   rm "$DEST/install"
 
-  cp build/firmware-xiaomi-beryllium/lib/firmware "$DEST/usr/lib" -r
+  mv "$DEST/packages" "build/packages-$IMAGE_NAME"
 
-  cp overlay/* "$DEST" -r
+  cp build/firmware-xiaomi-beryllium/lib/firmware "$DEST/usr/lib" -r
 }
 
 function build_kernel() {
@@ -137,18 +378,39 @@ function build_kernel() {
   git checkout .
 
   # Patch kernel config
-  sed -i "s/# CONFIG_DRM_FBDEV_EMULATION is not set/CONFIG_DRM_FBDEV_EMULATION=y/" arch/arm64/configs/beryllium_defconfig
-  sed -i "s/CONFIG_CMDLINE_FORCE=y/CONFIG_CMDLINE_FORCE=n/" arch/arm64/configs/beryllium_defconfig
   cat >>arch/arm64/configs/beryllium_defconfig <<EOF
 
-#USB drivers
-CONFIG_USB_DWC2=y
+CONFIG_DRM_FBDEV_EMULATION=y
+CONFIG_CMDLINE_FORCE=n
 
-#Anbox (This may not be needed, but the wiki advises to do so)
-CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"
+CONFIG_MEDIA_SUPPORT=y
+CONFIG_MEDIA_SUPPORT_FILTER=y
+CONFIG_MEDIA_PLATFORM_SUPPORT=y
+CONFIG_MEDIA_USB_SUPPORT=y
+CONFIG_MEDIA_CONTROLLER=y
+
+CONFIG_EXTCON=y
+CONFIG_EXTCON_USB_GPIO=y
+CONFIG_TYPEC_TCPCI=y
+CONFIG_TYPEC_UCSI=y
+CONFIG_TYPEC_QCOM_PMIC=y
+CONFIG_USB_DWC2=y
+CONFIG_USB_DWC3_OF_SIMPLE=y
+CONFIG_USB_DWC3_DUAL_ROLE=y
+CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+CONFIG_USB_STORAGE=y
+CONFIG_USB_HID=y
+CONFIG_USB_PHY=y
+CONFIG_USB_ULPI_BUS=y
+CONFIG_USB_ROLE_SWITCH=y
+
+CONFIG_ATH10K_SPECTRAL=y
+CONFIG_ATH10K_DFS_CERTIFIED=y
 EOF
 
   # Build kernel
+  export ARCH=arm64
+  export CROSS_COMPILE=aarch64-linux-gnu-
   MAKEFLAGS="-j$(nproc --all)" make beryllium_defconfig Image.gz modules dtbs
   cat arch/arm64/boot/Image.gz arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dtb >arch/arm64/boot/.Image.gz-dtb
 
@@ -157,6 +419,7 @@ EOF
   export INSTALL_PATH="$DEST/boot"
   export INSTALL_MOD_PATH="$DEST/usr"
   make zinstall modules_install
+  cd ../..
 }
 
 function build_initramfs() {
@@ -189,11 +452,16 @@ function build_bootimg() {
     -o build/boot.img
 }
 
-download_sources
-setup_rootfsimg
-build_rootfs &
-build_kernel &
-wait
+if [ -n "$ONLY_BOOTIMG" ]; then
+  setup_dirty_rootfs
+  build_kernel
+else
+  download_sources
+  setup_clean_rootfs
+  build_rootfs &
+  build_kernel &
+  wait
+fi
 
 build_initramfs
 build_bootimg

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+build() {
+  add_binary fdisk
+  add_binary partx
+  add_binary resize2fs
+
+  add_binary fsck.f2fs
+  add_symlink "/usr/bin/resize.f2fs" "fsck.f2fs"
+
+  add_runscript
+}
+
+help() {
+  cat <<HELPEOF
+This hook provides resize2fs and resize.f2fs for offline resizing.
+HELPEOF
+}
