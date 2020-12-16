@@ -16,7 +16,19 @@ Without it, you will probably wait for hours on every build, so it's highly reco
 ./build.sh plasma-mobile
 ```
 
-If you only want to rebuild the kernel, initramfs and boot.img you can append `-bootimg` to the image name.
+To include the default apps (probably what you want for non development purposes):
+
+```bash
+./build.sh phosh-apps
+./build.sh plasma-mobile-apps
+```
+
+To only rebuild the kernel, initramfs and boot.img:
+
+```bash
+./build.sh phosh-bootimg
+./build.sh plasma-mobile-bootimg
+```
 
 # Flashing onto SD card
 
