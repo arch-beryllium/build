@@ -1,9 +1,9 @@
 # Arch Linux on beryllium (Xiaomi Poco F1)
 
 My efforts to run Arch Linux natively (no [Halium](https://halium.org)) on the Poco F1.  
-I only create this script (yet), but the most effort comes from the people working
+I only created this script (yet), but the most effort comes from the people working
 on https://gitlab.com/sdm845-mainline/sdm845-linux.  
-Currently, you can only boot from the SD card, but adding support for internal memory will be coming.
+Currently, you can only boot from the SD card or using QEMU, but support for internal memory will be coming.
 
 # Building
 
@@ -63,7 +63,7 @@ The default password is `123456`.
 
 # Enable USB internet forwarding
 
-This will block WiFi until rebooting on the device.  
+This will block Wi-Fi on the device until rebooting.  
 Host side:
 
 ```bash
