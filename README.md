@@ -40,7 +40,7 @@ Everything on the SD card will be deleted so watch out what you are doing.
 ./flash_sdcard.sh plasma-mobile /dev/sdX
 ```
 
-# Running
+# Booting
 
 Put the SD card into the device.  
 Boot the device to bootloader mode (you might need to reboot it once to bootloader mode if you put the SD card into the
@@ -75,6 +75,19 @@ Device side:
 ```bash
 sudo route add default gw 10.15.19.100
 ```
+
+# QEMU
+
+You can also run the image in QEMU:
+
+```bash
+./qemu.sh phosh
+./qemu.sh plasma-mobile
+```
+
+It uses a qcow2 overlay image, so the rootfs won't be changed.  
+It also automatically forwards network requests, and you don't need to use ssh to get a shell, because script
+automatically opens a console for you.
 
 # Anbox
 
