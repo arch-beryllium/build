@@ -104,7 +104,7 @@ function download_repo() {
 }
 
 function download_sources() {
-  download_repo "sdm845-linux" "https://gitlab.com/sdm845-mainline/sdm845-linux.git/" "beryllium-battery" &
+  download_repo "sdm845-linux" "https://gitlab.com/sdm845-mainline/sdm845-linux.git/" "beryllium-dev" &
   download_repo "firmware-xiaomi-beryllium" "https://gitlab.com/sdm845-mainline/firmware-xiaomi-beryllium.git/" "master" &
   download_repo "pmaports" "https://gitlab.com/postmarketOS/pmaports.git/" "master" &
   download_repo "efidroid-build" "https://github.com/efidroid/build.git" "master" &
