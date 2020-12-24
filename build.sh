@@ -170,6 +170,7 @@ $PRE_SCRIPT
 pacman -Syy
 pacman -Rdd --noconfirm linux-aarch64 linux-firmware # We supply our own kernel (trough boot.img) and firmware
 pacman -Su --noconfirm --overwrite=*
+yes | pacman -Scc
 pacman -S --noconfirm --needed --overwrite=* \
   f2fs-tools \
   bluez-libs \
