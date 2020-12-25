@@ -98,13 +98,16 @@ function download_repo() {
   else
     (
       cd "build/$1" || exit 1
+      git checkout .
+      git reset --hard
+      git clean -fd
       git pull
     )
   fi
 }
 
 function download_sources() {
-  download_repo "sdm845-linux" "https://gitlab.com/sdm845-mainline/sdm845-linux.git/" "beryllium-dev" &
+  download_repo "sdm845-linux" "https://gitlab.com/sdm845-mainline/sdm845-linux.git/" "beryllium-dev-battery" &
   download_repo "firmware-xiaomi-beryllium" "https://gitlab.com/sdm845-mainline/firmware-xiaomi-beryllium.git/" "master" &
   download_repo "pmaports" "https://gitlab.com/postmarketOS/pmaports.git/" "master" &
   download_repo "efidroid-build" "https://github.com/efidroid/build.git" "master" &
@@ -273,6 +276,22 @@ CONFIG_DRM_VIRTIO_GPU=y
 
 CONFIG_BOOTSPLASH=y
 CONFIG_LOGO=n
+
+CONFIG_HIBERNATE_CALLBACKS=y
+CONFIG_HIBERNATION=y
+CONFIG_HIBERNATION_SNAPSHOT_DEV=y
+CONFIG_PM_AUTOSLEEP=y
+CONFIG_PM_WAKELOCKS_LIMIT=100
+CONFIG_PM_WAKELOCKS_GC=y
+CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y
+CONFIG_ARCH_HIBERNATION_HEADER=y
+
+CONFIG_CPU_FREQ_STAT=y
+CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE=y
+CONFIG_CPU_FREQ_GOV_USERSPACE=y
+CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+CONFIG_ARM_QCOM_CPUFREQ_HW=y
 EOF
 
   # Apply bootsplash patches
