@@ -48,8 +48,12 @@ device after it already booted to bootloader mode).
 Boot from a temporary (nothing will be written to the device) boot.img using this script:
 
 ```bash
-./boot.sh
+./boot.sh phosh
+./boot.sh plasma-mobile
 ```
+
+On the first boot it will take a longer time, because it resizes the rootfs to the full size of the SD card. Please
+don't turn it off in that time.
 
 # SSHing into the device
 

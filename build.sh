@@ -232,6 +232,8 @@ function build_kernel() {
 
   # Reset kernel config
   git checkout .
+  git reset --hard
+  git clean -fd
 
   # Patch kernel config
   cat >>arch/arm64/configs/beryllium_defconfig <<EOF
@@ -268,7 +270,13 @@ CONFIG_VIRTIO_PCI=y
 CONFIG_VIRTIO_IOMMU=y
 CONFIG_VIRTIO_INPUT=y
 CONFIG_DRM_VIRTIO_GPU=y
+
+CONFIG_BOOTSPLASH=y
+CONFIG_LOGO=n
 EOF
+
+  # Apply bootsplash patches
+  patch -Np1 <"../../bootsplash.patch"
 
   # Build kernel
   export ARCH=arm64
@@ -296,22 +304,22 @@ EOF
   do_chroot /initramfs
   rm "$DEST/initramfs"
 
-  mv "$DEST/boot/initramfs-$KERNEL_RELEASE.img" build/initramfs.img
+  mv "$DEST/boot/initramfs-$KERNEL_RELEASE.img" "build/initramfs-$IMAGE_NAME.img"
 }
 
 function build_bootimg() {
   FILE=build/pmaports/device/testing/device-xiaomi-beryllium/deviceinfo
   python3 build/efidroid-build/tools/mkbootimg \
     --kernel build/sdm845-linux/arch/arm64/boot/.Image.gz-dtb \
-    --ramdisk build/initramfs.img \
+    --ramdisk "build/initramfs-$IMAGE_NAME.img" \
     --base "$(grep "offset_base" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --second_offset "$(grep "offset_second" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --kernel_offset "$(grep "offset_kernel" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --ramdisk_offset "$(grep "offset_ramdisk" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --tags_offset "$(grep "offset_tags" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --pagesize "$(grep "pagesize" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
-    --cmdline "root=LABEL=ALARM rw" \
-    -o build/boot.img
+    --cmdline "root=LABEL=ALARM rw bootsplash.bootfile=bootsplash" \
+    -o "build/boot-$IMAGE_NAME.img"
 }
 
 if [ -n "$ONLY_BOOTIMG" ]; then

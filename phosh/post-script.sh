@@ -1,3 +1,5 @@
+ln -sf /usr/lib/firmware/bootsplash-themes/danctnix/bootsplash /lib/firmware/bootsplash
+
 cat >/etc/NetworkManager/conf.d/disable-random-mac.conf <<EOF
 [device]
 wifi.scan-rand-mac-address=no

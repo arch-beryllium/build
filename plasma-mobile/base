@@ -2,6 +2,8 @@ accounts-qml-module
 adwaita-icon-theme
 bluedevil-git
 bluez-qt-git
+bootsplash-systemd
+bootsplash-theme-kde
 desktop-file-utils
 discover-git
 flatpak

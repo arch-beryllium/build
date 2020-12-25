@@ -19,8 +19,8 @@ fi
 qemu-system-aarch64 \
   -nodefaults \
   -kernel build/sdm845-linux/arch/arm64/boot/Image \
-  -initrd build/initramfs.img \
-  -append "root=/dev/vda1 rw audit=0" \
+  -initrd "build/initramfs-$1.img" \
+  -append "root=/dev/vda1 rw audit=0 bootsplash.bootfile=bootsplash" \
   -smp "$(nproc --all)" \
   -m 6G \
   -serial stdio \
