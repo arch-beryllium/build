@@ -354,3 +354,4 @@ fi
 
 build_initramfs
 build_bootimg
+cleanup

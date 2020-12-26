@@ -6,4 +6,4 @@ if [ "$#" -ne 2 ]; then
 fi
 
 source build.sh "$1"
-source flash_sdcard.sh "$1" "$2"
+source flash_sdcard.sh "${1//-apps/}" "$2"
