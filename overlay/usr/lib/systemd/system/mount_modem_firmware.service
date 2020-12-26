@@ -1,0 +1,9 @@
+[Unit]
+Description=Mount modem firmware
+Before=tqftpserv.service
+
+[Service]
+ExecStart=/opt/mount_modem_firmware.sh
+
+[Install]
+WantedBy=multi-user.target

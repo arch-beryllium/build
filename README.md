@@ -134,3 +134,11 @@ and then reboot.
 If you want to cross-compile packages, you can use the `cross_compile_package.sh` or the `host_compile_package.sh`
 script from the https://github.com/arch-beryllium/beryllium-packages repo. You can pass all flags to the scripts that
 makepkg accepts.
+
+# Debugging modem
+
+Some commands useful for modem debugging:
+
+```bash
+journalctl -b |& grep -E "rmtfs|qrtr|tqftpserv|mapper|mount_modem_firmware|remoteproc"
+```

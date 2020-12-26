@@ -8,7 +8,7 @@ fi
 
 if [ "$1" = "barebone" ]; then
   IMAGE_NAME="barebone"
-  IMAGE_SIZE=$((1024 * 2))
+  IMAGE_SIZE=$((1024 * 3))
 
 elif [ "$1" = "barebone-bootimg" ]; then
   IMAGE_NAME="barebone"
@@ -237,6 +237,7 @@ systemctl enable tqftpserv
 systemctl enable rmtfs
 systemctl enable pd-mapper
 systemctl enable first_time_setup
+systemctl enable mount_modem_firmware
 
 cp -r /etc/skel/. /home/alarm/
 cp -r /etc/xdg/. /home/alarm/.config/
