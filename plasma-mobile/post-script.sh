@@ -7,3 +7,6 @@ systemctl enable sddm
 cp -r /etc/skel/. /home/alarm/
 cp -r /etc/xdg/. /home/alarm/.config/
 chown alarm:alarm /home/alarm/ -R
+
+systemctl enable tlp
+systemctl enable zswap-arm
