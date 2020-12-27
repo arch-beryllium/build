@@ -219,7 +219,7 @@ systemctl enable pd-mapper
 
 $POST_SCRIPT
 
-pacman -Q | cut -f 1 -d " " > /packages
+pacman -Q | cut -f 1 -d " " | sed "s/-git$//" > /packages
 EOF
   chmod +x "$DEST/install"
   do_chroot /install
