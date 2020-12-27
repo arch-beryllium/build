@@ -61,19 +61,27 @@ export ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
 mkdir -p build
 
 cleanup() {
-  if [ -e "$DEST/proc/cmdline" ]; then
+  if [ -e "$DEST/proc" ] && mountpoint "$DEST/proc" >/dev/null; then
     umount "$DEST/proc"
   fi
-  if [ -d "$DEST/sys/kernel" ]; then
+  if [ -e "$DEST/sys" ] && mountpoint "$DEST/sys" >/dev/null; then
     umount "$DEST/sys"
   fi
-  umount "$DEST/dev" || true
-  umount "$DEST/tmp" || true
-
-  umount -lc "$DEST" || true
-  rm -rf "$DEST" || true
-
-  losetup -d "$LOOP_DEVICE" || true
+  if [ -e "$DEST/dev" ] && mountpoint "$DEST/dev" >/dev/null; then
+    umount "$DEST/dev"
+  fi
+  if [ -e "$DEST/tmp" ] && mountpoint "$DEST/tmp" >/dev/null; then
+    umount "$DEST/tmp" || true
+  fi
+  if [ -e "$DEST" ] && mountpoint "$DEST" >/dev/null; then
+    umount -lc "$DEST" || true
+  fi
+  if [ -e "$DEST" ]; then
+    rm -rf "$DEST" || true
+  fi
+  if [ -e "$LOOP_DEVICE"p1 ]; then
+    losetup -d "$LOOP_DEVICE" || true
+  fi
 }
 trap cleanup EXIT
 
