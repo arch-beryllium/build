@@ -12,19 +12,19 @@ fi
 
 set -ex
 
-if [ ! -f "build/qemu-$1.cow" ]; then
-  qemu-img create -o "backing_file=rootfs-$1.img,backing_fmt=raw" -f qcow2 "build/qemu-$1.cow"
+if [ ! -f "build/$1-qemu.cow" ]; then
+  qemu-img create -o "backing_file=$1-rootfs.img,backing_fmt=raw" -f qcow2 "build/$1-qemu.cow"
 fi
 
 qemu-system-aarch64 \
   -nodefaults \
   -kernel build/sdm845-linux/arch/arm64/boot/Image \
-  -initrd "build/initramfs-$1.img" \
+  -initrd "build/$1-initramfs.img" \
   -append "root=/dev/vda1 rw audit=0 bootsplash.bootfile=bootsplash" \
   -smp "$(nproc --all)" \
   -m 6G \
   -serial stdio \
-  -drive "file=build/qemu-$1.cow,format=qcow2,if=virtio" \
+  -drive "file=build/$1-qemu.cow,format=qcow2,if=virtio" \
   -device virtio-mouse-pci \
   -device virtio-keyboard-pci \
   -nic user,model=virtio-net-pci \

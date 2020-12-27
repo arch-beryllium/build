@@ -5,4 +5,4 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-fastboot boot "build/boot-$1.img"
+fastboot boot "build/$1-boot.img"

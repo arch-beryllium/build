@@ -56,7 +56,7 @@ export ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar
 export TARBALL="build/$(basename $ROOTFS)"
 export DEST=$(mktemp -d)
 export LOOP_DEVICE=$(losetup -f)
-export ROOTFSIMG="build/rootfs-$IMAGE_NAME.img"
+export ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
 
 mkdir -p build
 
@@ -225,7 +225,7 @@ EOF
   do_chroot /install
   rm "$DEST/install"
 
-  mv "$DEST/packages" "build/packages-$IMAGE_NAME"
+  mv "$DEST/packages" "build/$IMAGE_NAME-packages.txt"
 
   cp build/firmware-xiaomi-beryllium/lib/firmware "$DEST/usr/lib" -r
 }
@@ -317,20 +317,20 @@ function build_initramfs() {
   cat >"$DEST/initramfs" <<EOF
 #!/bin/bash
 set -ex
-mkinitcpio --generate /boot/initramfs-$KERNEL_RELEASE.img --kernel $KERNEL_RELEASE
+mkinitcpio --generate /boot/$KERNEL_RELEASE-initramfs.img --kernel $KERNEL_RELEASE
 EOF
   chmod +x "$DEST/initramfs"
   do_chroot /initramfs
   rm "$DEST/initramfs"
 
-  mv "$DEST/boot/initramfs-$KERNEL_RELEASE.img" "build/initramfs-$IMAGE_NAME.img"
+  mv "$DEST/boot/$KERNEL_RELEASE-initramfs.img" "build/$IMAGE_NAME-initramfs.img"
 }
 
 function build_bootimg() {
   FILE=build/pmaports/device/testing/device-xiaomi-beryllium/deviceinfo
   python3 build/efidroid-build/tools/mkbootimg \
     --kernel build/sdm845-linux/arch/arm64/boot/.Image.gz-dtb \
-    --ramdisk "build/initramfs-$IMAGE_NAME.img" \
+    --ramdisk "build/$IMAGE_NAME-initramfs.img" \
     --base "$(grep "offset_base" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --second_offset "$(grep "offset_second" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --kernel_offset "$(grep "offset_kernel" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
@@ -338,7 +338,7 @@ function build_bootimg() {
     --tags_offset "$(grep "offset_tags" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --pagesize "$(grep "pagesize" <$FILE | sed "s/.*=\"//" | sed "s/\"//")" \
     --cmdline "root=LABEL=ALARM rw bootsplash.bootfile=bootsplash" \
-    -o "build/boot-$IMAGE_NAME.img"
+    -o "build/$IMAGE_NAME-boot.img"
 }
 
 if [ -n "$ONLY_BOOTIMG" ]; then
