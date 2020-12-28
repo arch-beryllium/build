@@ -62,13 +62,13 @@ mkdir -p build
 
 cleanup() {
   if [ -e "$DEST/proc" ] && mountpoint "$DEST/proc" >/dev/null; then
-    umount "$DEST/proc"
+    umount "$DEST/proc" || true
   fi
   if [ -e "$DEST/sys" ] && mountpoint "$DEST/sys" >/dev/null; then
-    umount "$DEST/sys"
+    umount "$DEST/sys" || true
   fi
   if [ -e "$DEST/dev" ] && mountpoint "$DEST/dev" >/dev/null; then
-    umount "$DEST/dev"
+    umount "$DEST/dev" || true
   fi
   if [ -e "$DEST/tmp" ] && mountpoint "$DEST/tmp" >/dev/null; then
     umount "$DEST/tmp" || true
@@ -92,10 +92,10 @@ do_chroot() {
   chroot "$DEST" mount -t sysfs sys /sys || true
   chroot "$DEST" mount -t tmpfs none /tmp || true
   chroot "$DEST" "$cmd"
-  chroot "$DEST" umount /tmp
-  chroot "$DEST" umount /sys
-  chroot "$DEST" umount /proc
-  umount "$DEST/dev"
+  chroot "$DEST" umount /tmp || true
+  chroot "$DEST" umount /sys || true
+  chroot "$DEST" umount /proc || true
+  umount "$DEST/dev" || true
 }
 
 set -ex
