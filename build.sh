@@ -2,7 +2,7 @@
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: build.sh <target>"
-  echo "Targets: barebone, phosh, plasma-mobile, phosh-apps, plasma-mobile-apps, phosh-bootimg, plasma-mobile-bootimg"
+  echo "Targets: barebone, phosh, phosh-apps, phosh-bootimg, plasma-mobile, plasma-mobile-apps, plasma-mobile-bootimg"
   exit 1
 fi
 
@@ -14,23 +14,23 @@ elif [ "$1" = "phosh" ]; then
   export IMAGE_NAME="phosh"
   export IMAGE_SIZE=3072
 
-elif [ "$1" = "plasma-mobile" ]; then
-  export IMAGE_NAME="plasma-mobile"
-  export IMAGE_SIZE=5120
-
 elif [ "$1" = "phosh-apps" ]; then
   export IMAGE_NAME="phosh"
   export INCLUDE_APPS=1
   export IMAGE_SIZE=4096
 
+elif [ "$1" = "phosh-bootimg" ]; then
+  export IMAGE_NAME="phosh"
+  export ONLY_BOOTIMG=1
+
+elif [ "$1" = "plasma-mobile" ]; then
+  export IMAGE_NAME="plasma-mobile"
+  export IMAGE_SIZE=5120
+
 elif [ "$1" = "plasma-mobile-apps" ]; then
   export IMAGE_NAME="plasma-mobile"
   export INCLUDE_APPS=1
   export IMAGE_SIZE=5120
-
-elif [ "$1" = "phosh-bootimg" ]; then
-  export IMAGE_NAME="phosh"
-  export ONLY_BOOTIMG=1
 
 elif [ "$1" = "plasma-mobile-bootimg" ]; then
   export IMAGE_NAME="plasma-mobile"
