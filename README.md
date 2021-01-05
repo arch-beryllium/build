@@ -12,6 +12,7 @@ like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/jld3103/
 Without it, you will probably wait for hours on every build, so it's highly recommended.
 
 ```bash
+./build.sh barebone
 ./build.sh phosh
 ./build.sh plasma-mobile
 ```
@@ -26,6 +27,7 @@ To include the default apps (probably what you want for non development purposes
 To only rebuild the kernel, initramfs and boot.img:
 
 ```bash
+./build.sh barebone-bootimg
 ./build.sh phosh-bootimg
 ./build.sh plasma-mobile-bootimg
 ```
@@ -36,6 +38,7 @@ You need at least an 8 GB SD card, but more is better.
 Everything on the SD card will be deleted so watch out what you are doing.
 
 ```bash
+./flash_sdcard.sh barebone /dev/sdX
 ./flash_sdcard.sh phosh /dev/sdX
 ./flash_sdcard.sh plasma-mobile /dev/sdX
 ```
@@ -49,6 +52,7 @@ device after it already booted to bootloader mode).
 To temporarily boot from the SD card use:
 
 ```bash
+./boot.sh barebone
 ./boot.sh phosh
 ./boot.sh plasma-mobile
 ```
@@ -56,6 +60,7 @@ To temporarily boot from the SD card use:
 To permanently boot from the SD card use:
 
 ```bash
+./flash_boot.sh barebone
 ./flash_boot.sh phosh
 ./flash_boot.sh plasma-mobile
 ```
@@ -93,6 +98,7 @@ sudo route add default gw 10.15.19.100
 You can also run the image in QEMU:
 
 ```bash
+./qemu.sh barebone
 ./qemu.sh phosh
 ./qemu.sh plasma-mobile
 ```
