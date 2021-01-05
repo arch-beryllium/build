@@ -44,12 +44,20 @@ Everything on the SD card will be deleted so watch out what you are doing.
 
 Put the SD card into the device.  
 Boot the device to bootloader mode (you might need to reboot it once to bootloader mode if you put the SD card into the
-device after it already booted to bootloader mode).  
-Boot from a temporary (nothing will be written to the device) boot.img using this script:
+device after it already booted to bootloader mode).
+
+To temporarily boot from the SD card use:
 
 ```bash
 ./boot.sh phosh
 ./boot.sh plasma-mobile
+```
+
+To permanently boot from the SD card use:
+
+```bash
+./flash_boot.sh phosh
+./flash_boot.sh plasma-mobile
 ```
 
 On the first boot it will take a longer time, because it resizes the rootfs to the full size of the SD card. Please
