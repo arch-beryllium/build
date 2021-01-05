@@ -120,7 +120,6 @@ function download_repo() {
 
 function download_sources() {
   download_repo "sdm845-linux" "https://gitlab.com/sdm845-mainline/sdm845-linux.git/" "beryllium-dev-battery" &
-  download_repo "firmware-xiaomi-beryllium" "https://gitlab.com/sdm845-mainline/firmware-xiaomi-beryllium.git/" "master" &
   download_repo "pmaports" "https://gitlab.com/postmarketOS/pmaports.git/" "master" &
   download_repo "efidroid-build" "https://github.com/efidroid/build.git" "master" &
 
@@ -183,7 +182,7 @@ set -ex
 $PRE_SCRIPT
 
 pacman -Syy
-pacman -Rdd --noconfirm linux-aarch64 linux-firmware # We supply our own kernel (trough boot.img) and firmware
+pacman -Rdd --noconfirm linux-aarch64 linux-firmware # Don't upgrade kernel and firmware which we will remove later anyway
 pacman -Su --noconfirm --overwrite=*
 yes | pacman -Scc
 pacman -S --noconfirm --needed --overwrite=* \
@@ -206,6 +205,7 @@ pacman -S --noconfirm --needed --overwrite=* \
   sudo \
   xdg-user-dirs \
   mesa-git \
+  firmware-xiaomi-beryllium-git \
   $(printf " %s" "${EXTRA_PACKAGES[@]}")
 yes | pacman -Scc
 
@@ -238,8 +238,6 @@ EOF
   rm "$DEST/install"
 
   mv "$DEST/packages" "build/$IMAGE_NAME-packages.txt"
-
-  cp build/firmware-xiaomi-beryllium/lib/firmware "$DEST/usr/lib" -r
 }
 
 function build_kernel() {
