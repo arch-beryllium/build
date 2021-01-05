@@ -1,13 +1,15 @@
 #!/usr/bin/ash
 
 run_hook() {
-  DEVICE=$(resolve_device "$root" | sed 's/..$//')
-  echo "The current storage device is $DEVICE"
+  if [ -e /sys/devices/platform/bootsplash.0/enabled ]; then
+    echo 0 >/sys/devices/platform/bootsplash.0/enabled
+  fi
 
-  start=$(fdisk -l "${DEVICE}" | grep "${DEVICE}"p1 | sed 's/*//' | awk '{print $2}')
-  echo "Rootfs start sector is $start"
+  # shellcheck disable=SC2154
+  device=$(resolve_device "$root" | sed 's/..$//')
+  start=$(fdisk -l "${device}" | grep "${device}"p1 | sed 's/*//' | awk '{print $2}')
 
-  fdisk "${DEVICE}" <<EOF
+  fdisk "${device}" <<EOF
 p
 d
 
@@ -19,6 +21,10 @@ $start
 w
 EOF
 
-  partx -u "${DEVICE}"
-  resize.f2fs "${DEVICE}"p1
+  partx -u "${device}"
+  resize.f2fs "${device}"p1
+
+  if [ -e /sys/devices/platform/bootsplash.0/enabled ]; then
+    echo 1 >/sys/devices/platform/bootsplash.0/enabled
+  fi
 }
