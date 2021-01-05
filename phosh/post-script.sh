@@ -9,5 +9,6 @@ cat >/etc/gtk-3.0/settings.ini <<EOF
 gtk-application-prefer-dark-theme=1
 EOF
 
+systemctl enable ModemManager
 systemctl enable phosh
 systemctl enable zramswap

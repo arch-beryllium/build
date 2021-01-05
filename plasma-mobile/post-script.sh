@@ -19,5 +19,6 @@ chmod a+x /home/alarm/.config/autostart-scripts/initial-scale.sh
 
 chown alarm:alarm /home/alarm/ -R
 
+systemctl enable ModemManager
 systemctl enable tlp
 systemctl enable zswap-arm

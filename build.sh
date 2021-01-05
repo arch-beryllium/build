@@ -2,11 +2,15 @@
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: build.sh <target>"
-  echo "Targets: phosh, plasma-mobile, phosh-apps, plasma-mobile-apps, phosh-bootimg, plasma-mobile-bootimg"
+  echo "Targets: barebone, phosh, plasma-mobile, phosh-apps, plasma-mobile-apps, phosh-bootimg, plasma-mobile-bootimg"
   exit 1
 fi
 
-if [ "$1" = "phosh" ]; then
+if [ "$1" = "barebone" ]; then
+  export IMAGE_NAME="barebone"
+  export IMAGE_SIZE=2048
+
+elif [ "$1" = "phosh" ]; then
   export IMAGE_NAME="phosh"
   export IMAGE_SIZE=3072
 
@@ -184,6 +188,7 @@ pacman -Su --noconfirm --overwrite=*
 yes | pacman -Scc
 pacman -S --noconfirm --needed --overwrite=* \
   f2fs-tools \
+  bluez \
   bluez-libs \
   bluez-utils \
   alsa-utils \
@@ -218,7 +223,6 @@ echo "LANG=en_US.UTF-8" > /etc/locale.conf
 systemctl enable sshd
 systemctl enable usb-tethering
 systemctl enable NetworkManager
-systemctl enable ModemManager
 systemctl enable bluetooth
 systemctl enable qrtr-ns
 systemctl enable tqftpserv
