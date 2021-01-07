@@ -45,13 +45,13 @@ else
   exit 1
 fi
 
-IFS=$'\n' read -d '' -r -a base <$IMAGE_NAME/base
+IFS=$'\n' read -d '' -r -a base <ui/$IMAGE_NAME/base
 if [ -n "$INCLUDE_APPS" ]; then
-  IFS=$'\n' read -d '' -r -a apps <$IMAGE_NAME/apps
+  IFS=$'\n' read -d '' -r -a apps <ui/$IMAGE_NAME/apps
 fi
 export EXTRA_PACKAGES=("${base[@]}" "${apps[@]}")
-export PRE_SCRIPT=$(cat $IMAGE_NAME/pre-script.sh)
-export POST_SCRIPT=$(cat $IMAGE_NAME/post-script.sh)
+export PRE_SCRIPT=$(cat ui/$IMAGE_NAME/pre-script.sh)
+export POST_SCRIPT=$(cat ui/$IMAGE_NAME/post-script.sh)
 
 if [ "$(id -u)" -ne "0" ]; then
   echo "This script requires root."
