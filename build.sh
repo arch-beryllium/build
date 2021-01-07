@@ -193,10 +193,12 @@ pacman -S --noconfirm --needed --overwrite=* \
   sudo \
   xdg-user-dirs \
   mesa-git \
+  $(printf " %s" "${EXTRA_PACKAGES[@]}")
+yes | pacman -Scc
+pacman -S --noconfirm --needed --overwrite=* \
   firmware-xiaomi-beryllium-git \
   linux-beryllium \
-  linux-beryllium-headers \
-  $(printf " %s" "${EXTRA_PACKAGES[@]}")
+  linux-beryllium-headers
 yes | pacman -Scc
 
 usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
