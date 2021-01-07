@@ -4,6 +4,7 @@ systemctl enable sddm
 
 cp -r /etc/skel/. /home/alarm/
 cp -r /etc/xdg/. /home/alarm/.config/
+rm /home/alarm/.config/systemd/user # Broken symlink that's not needed
 
 mkdir -p /home/alarm/.config/autostart-scripts
 cat >>/home/alarm/.config/autostart-scripts/initial-scale.sh <<EOF
