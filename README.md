@@ -107,6 +107,25 @@ It uses a qcow2 overlay image, so the rootfs won't be changed.
 It also automatically forwards network requests, and you don't need to use ssh to get a shell, because script
 automatically opens a console for you.
 
+# Kernel updates
+
+## Device
+
+When you flash the boot.img permanently, every kernel update on the device will flash the new boot.img onto the boot
+partition that is generated.  
+If you booted temporarily from a boot.img then the new boot.img won't be flashed onto the boot partition.
+
+## QEMU
+
+The kernel update that is installed in the image won't be used, so you have to _build_ (actually just extracts it from
+the image) it manually:
+
+```bash
+./build.sh barebone-bootimg
+./build.sh phosh-bootimg
+./build.sh plasma-mobile-bootimg
+```
+
 # Anbox
 
 Install and setup Anbox:
