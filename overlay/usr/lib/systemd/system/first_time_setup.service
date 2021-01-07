@@ -1,0 +1,8 @@
+[Unit]
+Description=First Time Setup
+
+[Service]
+ExecStart=/usr/local/sbin/first_time_setup.sh
+
+[Install]
+WantedBy=multi-user.target

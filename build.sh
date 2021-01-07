@@ -220,6 +220,7 @@ systemctl enable qrtr-ns
 systemctl enable tqftpserv
 systemctl enable rmtfs
 systemctl enable pd-mapper
+systemctl enable first_time_setup
 
 $POST_SCRIPT
 
