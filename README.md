@@ -113,7 +113,8 @@ automatically opens a console for you.
 
 When you flash the boot.img permanently, every kernel update on the device will flash the new boot.img onto the boot
 partition that is generated.  
-If you booted temporarily from a boot.img then the new boot.img won't be flashed onto the boot partition.
+If you booted temporarily from a boot.img then the new boot.img won't be flashed onto the boot partition.  
+To still use the new kernel, update the boot.img with the instructions from the QEMU section below.
 
 ## QEMU
 
