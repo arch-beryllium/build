@@ -61,9 +61,7 @@ fi
 set -ex
 
 export ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
-export KERNEL="https://repo.lohl1kohl.de/beryllium/aarch64/linux-beryllium-5.10.0-3-aarch64.pkg.tar.xz"
 export TARBALL="build/$(basename $ROOTFS)"
-export KERNELPACKAGE="build/$(basename $KERNEL)"
 export DEST=$(mktemp -d)
 export LOOP_DEVICE=$(losetup -f)
 export ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
