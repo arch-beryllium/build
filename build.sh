@@ -154,6 +154,16 @@ function build_rootfs() {
 
   cp overlay/* "$DEST" -r
 
+  cat >"$DEST/install" <<EOF
+#!/bin/bash
+set -ex
+
+$PRE_SCRIPT
+EOF
+  chmod +x "$DEST/install"
+  do_chroot /install
+  rm "$DEST/install"
+
   if [ -n "$LOCAL_MIRROR" ]; then
     cp "$DEST/etc/pacman.conf" "$DEST/etc/pacman.conf.bak"
     cp "$DEST/etc/pacman.d/mirrorlist" "$DEST/etc/pacman.d/mirrorlist.bak"
@@ -164,8 +174,6 @@ function build_rootfs() {
   cat >"$DEST/install" <<EOF
 #!/bin/bash
 set -ex
-
-$PRE_SCRIPT
 
 pacman -Syy
 pacman -Rdd --noconfirm linux-aarch64 linux-firmware # Don't upgrade kernel and firmware which we will remove later anyway
