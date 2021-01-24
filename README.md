@@ -24,7 +24,7 @@ To include the default apps (probably what you want for non development purposes
 ./build.sh plasma-mobile-apps
 ```
 
-To only rebuild the kernel, initramfs and boot.img:
+To only update the kernel, initramfs and boot.img:
 
 ```bash
 ./build.sh barebone-bootimg
