@@ -95,6 +95,7 @@ trap cleanup EXIT
 
 do_chroot() {
   cmd="$*"
+  cp "$(which qemu-aarch64-static)" "$DEST/usr/bin"
   mount -o bind /dev "$DEST/dev"
   chroot "$DEST" mount -t proc proc /proc || true
   chroot "$DEST" mount -t sysfs sys /sys || true
@@ -104,6 +105,7 @@ do_chroot() {
   chroot "$DEST" umount /sys || true
   chroot "$DEST" umount /proc || true
   umount "$DEST/dev" || true
+  rm -rf "$DEST/usr/bin/qemu-aarch64-static"
 }
 
 set -ex
