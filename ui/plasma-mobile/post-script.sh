@@ -1,5 +1,5 @@
-sed -i "s/kde/alarm/" /etc/sddm.conf
-sed -i "s/EnableHiDPI=false/EnableHiDPI=true/g" /etc/sddm.conf
+sed -i "s/kde/alarm/" /etc/sddm.conf.d/00-default.conf
+sed -i "s/EnableHiDPI=false/EnableHiDPI=true/g" /etc/sddm.conf.d/00-default.conf
 systemctl enable sddm
 
 cp -r /etc/skel/. /home/alarm/
