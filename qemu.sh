@@ -31,5 +31,4 @@ qemu-system-aarch64 \
   -M virt \
   -cpu cortex-a57 \
   -device virtio-gpu-pci \
-  -display sdl,gl=on,show-cursor=on \
-  -vga virtio
+  -display sdl,gl=on,show-cursor=on
