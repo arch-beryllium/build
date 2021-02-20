@@ -15,6 +15,7 @@ Without it, you will probably wait for hours on every build, so it's highly reco
 ./build.sh barebone
 ./build.sh phosh
 ./build.sh plasma-mobile
+./build.sh lomiri
 ```
 
 To include the default apps (probably what you want for non development purposes):
@@ -22,6 +23,7 @@ To include the default apps (probably what you want for non development purposes
 ```bash
 ./build.sh phosh-apps
 ./build.sh plasma-mobile-apps
+./build.sh lomiri-apps
 ```
 
 To only update the kernel, initramfs and boot.img:
@@ -41,6 +43,7 @@ Everything on the SD card will be deleted so watch out what you are doing.
 ./flash_sdcard.sh barebone /dev/sdX
 ./flash_sdcard.sh phosh /dev/sdX
 ./flash_sdcard.sh plasma-mobile /dev/sdX
+./flash_sdcard.sh lomiri /dev/sdX
 ```
 
 # Booting
@@ -55,6 +58,7 @@ To temporarily boot from the SD card use:
 ./boot.sh barebone
 ./boot.sh phosh
 ./boot.sh plasma-mobile
+./boot.sh lomiri
 ```
 
 To permanently boot from the SD card use:
@@ -63,6 +67,7 @@ To permanently boot from the SD card use:
 ./flash_boot.sh barebone
 ./flash_boot.sh phosh
 ./flash_boot.sh plasma-mobile
+./flash_boot.sh lomiri
 ```
 
 On the first boot it will take a longer time, because it resizes the rootfs to the full size of the SD card. Please
@@ -101,6 +106,7 @@ You can also run the image in QEMU:
 ./qemu.sh barebone
 ./qemu.sh phosh
 ./qemu.sh plasma-mobile
+./qemu.sh lomiri
 ```
 
 It uses a qcow2 overlay image, so the rootfs won't be changed.  
@@ -125,6 +131,7 @@ the image) it manually:
 ./build.sh barebone-bootimg
 ./build.sh phosh-bootimg
 ./build.sh plasma-mobile-bootimg
+./build.sh lomiri-bootimg
 ```
 
 # Anbox

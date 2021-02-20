@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$#" -ne 2 ]; then
   echo "Usage: flash_sdcard.sh <image name> <device>"
-  echo "Image names: barebone, phosh, plasma-mobile"
+  echo "Image names: barebone, phosh, plasma-mobile, lomiri"
   exit 1
 fi
 
