@@ -8,7 +8,7 @@ fi
 
 if [ "$1" = "barebone" ]; then
   export IMAGE_NAME="barebone"
-  export IMAGE_SIZE=2048
+  export IMAGE_SIZE=3072
 
 elif [ "$1" = "barebone-bootimg" ]; then
   export IMAGE_NAME="barebone"
@@ -21,7 +21,7 @@ elif [ "$1" = "phosh" ]; then
 elif [ "$1" = "phosh-apps" ]; then
   export IMAGE_NAME="phosh"
   export INCLUDE_APPS=1
-  export IMAGE_SIZE=4096
+  export IMAGE_SIZE=5120
 
 elif [ "$1" = "phosh-bootimg" ]; then
   export IMAGE_NAME="phosh"
