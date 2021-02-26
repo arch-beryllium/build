@@ -50,7 +50,7 @@ systemctl enable repowerd
 systemctl enable hfd-service
 systemctl enable sensorfwd
 
-ln -sf /usr/share/backgrounds/archlinux/conference.png /usr/share/backgrounds/warty-final-ubuntu.png
+ln -sf /usr/share/backgrounds/archlinux/wave.png /usr/share/backgrounds/warty-final-ubuntu.png
 
 mkdir -p /usr/lib/systemd/user/graphical-session.target.wants
 ln -sf /usr/lib/systemd/user/maliit-server.service /usr/lib/systemd/user/graphical-session.target.wants/maliit-server.service
