@@ -8,7 +8,9 @@ Currently, you can only boot from the SD card or using QEMU, but support for int
 # Building
 
 To speed up package downloads you can use the `LOCAL_MIRROR` environment variable with and value
-like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/jld3103/arch-repo-mirror as local mirror tool.  
+like `http://192.168.178.30:8080/\$repo/\$arch` with https://github.com/arch-beryllium/mirror as local mirror tool.  
+(If you have used `arch-repo-mirror` previously for mirroring there is a quick migration guide available in the new
+repo).  
 Without it, you will probably wait for hours on every build, so it's highly recommended.
 
 ```bash
