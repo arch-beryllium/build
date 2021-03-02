@@ -7,51 +7,51 @@ if [ "$#" -ne 1 ]; then
 fi
 
 if [ "$1" = "barebone" ]; then
-  export IMAGE_NAME="barebone"
-  export IMAGE_SIZE=3072
+  IMAGE_NAME="barebone"
+  IMAGE_SIZE=3072
 
 elif [ "$1" = "barebone-bootimg" ]; then
-  export IMAGE_NAME="barebone"
-  export ONLY_BOOTIMG=1
+  IMAGE_NAME="barebone"
+  ONLY_BOOTIMG=1
 
 elif [ "$1" = "phosh" ]; then
-  export IMAGE_NAME="phosh"
-  export IMAGE_SIZE=4096
+  IMAGE_NAME="phosh"
+  IMAGE_SIZE=4096
 
 elif [ "$1" = "phosh-apps" ]; then
-  export IMAGE_NAME="phosh"
-  export INCLUDE_APPS=1
-  export IMAGE_SIZE=5120
+  IMAGE_NAME="phosh"
+  INCLUDE_APPS=1
+  IMAGE_SIZE=5120
 
 elif [ "$1" = "phosh-bootimg" ]; then
-  export IMAGE_NAME="phosh"
-  export ONLY_BOOTIMG=1
+  IMAGE_NAME="phosh"
+  ONLY_BOOTIMG=1
 
 elif [ "$1" = "plasma-mobile" ]; then
-  export IMAGE_NAME="plasma-mobile"
-  export IMAGE_SIZE=5120
+  IMAGE_NAME="plasma-mobile"
+  IMAGE_SIZE=5120
 
 elif [ "$1" = "plasma-mobile-apps" ]; then
-  export IMAGE_NAME="plasma-mobile"
-  export INCLUDE_APPS=1
-  export IMAGE_SIZE=5120
+  IMAGE_NAME="plasma-mobile"
+  INCLUDE_APPS=1
+  IMAGE_SIZE=5120
 
 elif [ "$1" = "plasma-mobile-bootimg" ]; then
-  export IMAGE_NAME="plasma-mobile"
-  export ONLY_BOOTIMG=1
+  IMAGE_NAME="plasma-mobile"
+  ONLY_BOOTIMG=1
 
 elif [ "$1" = "lomiri" ]; then
-  export IMAGE_NAME="lomiri"
-  export IMAGE_SIZE=6144
+  IMAGE_NAME="lomiri"
+  IMAGE_SIZE=6144
 
 elif [ "$1" = "lomiri-apps" ]; then
-  export IMAGE_NAME="lomiri"
-  export INCLUDE_APPS=1
-  export IMAGE_SIZE=6144
+  IMAGE_NAME="lomiri"
+  INCLUDE_APPS=1
+  IMAGE_SIZE=6144
 
 elif [ "$1" = "lomiri-bootimg" ]; then
-  export IMAGE_NAME="lomiri"
-  export ONLY_BOOTIMG=1
+  IMAGE_NAME="lomiri"
+  ONLY_BOOTIMG=1
 
 else
   echo "Unknown target: $*"
@@ -62,9 +62,9 @@ IFS=$'\n' read -d '' -r -a base <ui/$IMAGE_NAME/base
 if [ -n "$INCLUDE_APPS" ]; then
   IFS=$'\n' read -d '' -r -a apps <ui/$IMAGE_NAME/apps
 fi
-export EXTRA_PACKAGES=("${base[@]}" "${apps[@]}")
-export PRE_SCRIPT=$(cat ui/$IMAGE_NAME/pre-script.sh)
-export POST_SCRIPT=$(cat ui/$IMAGE_NAME/post-script.sh)
+EXTRA_PACKAGES=("${base[@]}" "${apps[@]}")
+PRE_SCRIPT=$(cat ui/$IMAGE_NAME/pre-script.sh)
+POST_SCRIPT=$(cat ui/$IMAGE_NAME/post-script.sh)
 
 if [ "$(id -u)" -ne "0" ]; then
   echo "This script requires root."
@@ -73,11 +73,11 @@ fi
 
 set -ex
 
-export ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
-export TARBALL="build/$(basename $ROOTFS)"
-export DEST=$(mktemp -d)
-export LOOP_DEVICE=$(losetup -f)
-export ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
+ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+TARBALL="build/$(basename $ROOTFS)"
+DEST=$(mktemp -d)
+LOOP_DEVICE=$(losetup -f)
+ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
 
 mkdir -p build
 
