@@ -58,13 +58,15 @@ else
   exit 1
 fi
 
-IFS=$'\n' read -d '' -r -a base <ui/$IMAGE_NAME/base
-if [ -n "$INCLUDE_APPS" ]; then
-  IFS=$'\n' read -d '' -r -a apps <ui/$IMAGE_NAME/apps
+EXTRA_INSTALL_PACKAGES=()
+EXTRA_UNINSTALL_PACKAGES=()
+if [ "$IMAGE_NAME" != "barebone" ]; then
+  EXTRA_INSTALL_PACKAGES+=("ui-$IMAGE_NAME-meta" "tweaks-$IMAGE_NAME" "tweaks-desktop-files" "bootsplash")
 fi
-EXTRA_PACKAGES=("${base[@]}" "${apps[@]}")
-PRE_SCRIPT=$(cat ui/$IMAGE_NAME/pre-script.sh)
-POST_SCRIPT=$(cat ui/$IMAGE_NAME/post-script.sh)
+if [ -n "$INCLUDE_APPS" ]; then
+  EXTRA_INSTALL_PACKAGES+=("apps-$IMAGE_NAME-meta")
+  EXTRA_UNINSTALL_PACKAGES+=("apps-$IMAGE_NAME-meta")
+fi
 
 if [ "$(id -u)" -ne "0" ]; then
   echo "This script requires root."
@@ -73,7 +75,7 @@ fi
 
 set -ex
 
-ROOTFS="http://mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+ROOTFS="http://de4.mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
 TARBALL="build/$(basename $ROOTFS)"
 DEST=$(mktemp -d)
 LOOP_DEVICE=$(losetup -f)
@@ -125,10 +127,8 @@ set -ex
 
 function download_sources() {
   if [ ! -f "$TARBALL" ]; then
-    wget "$ROOTFS" -O "$TARBALL" &
+    wget "$ROOTFS" -O "$TARBALL"
   fi
-
-  wait
 }
 
 function setup_clean_rootfs() {
@@ -169,16 +169,6 @@ function build_rootfs() {
 
   cp overlay/* "$DEST" -r
 
-  cat >"$DEST/install" <<EOF
-#!/bin/bash
-set -ex
-
-$PRE_SCRIPT
-EOF
-  chmod +x "$DEST/install"
-  do_chroot /install
-  rm "$DEST/install"
-
   if [ -n "$LOCAL_MIRROR" ]; then
     cp "$DEST/etc/pacman.conf" "$DEST/etc/pacman.conf.bak"
     cp "$DEST/etc/pacman.d/mirrorlist" "$DEST/etc/pacman.d/mirrorlist.bak"
@@ -201,8 +191,7 @@ pacman -S --noconfirm --needed --overwrite=* \
   bluez-utils \
   alsa-utils \
   wireless-regdb \
-  danctnix-usb-tethering \
-  danctnix-tweaks \
+  usb-tethering \
   alsa-ucm-beryllium \
   qrtr-git \
   tqftpserv-git \
@@ -212,12 +201,20 @@ pacman -S --noconfirm --needed --overwrite=* \
   networkmanager \
   wpa_supplicant \
   sudo \
-  xdg-user-dirs \
-  mesa-git \
-  $(printf " %s" "${EXTRA_PACKAGES[@]}")
+  xdg-user-dirs
 yes | pacman -Scc
+if [ ${#EXTRA_INSTALL_PACKAGES[@]} -ne 0 ]; then
+  pacman -S --noconfirm --needed --overwrite=* $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
+  yes | pacman -Scc
+fi
+if [ ${#EXTRA_UNINSTALL_PACKAGES[@]} -ne 0 ]; then
+  pacman -Rdd --noconfirm $(printf " %s" "${EXTRA_UNINSTALL_PACKAGES[@]}")
+fi
+if [ "$IMAGE_NAME" != "barebone" ]; then
+  sed -i 's/fsck)/fsck bootsplash)/' /etc/mkinitcpio.conf
+fi
 pacman -S --noconfirm --needed --overwrite=* \
-  firmware-xiaomi-beryllium-git \
+  firmware-xiaomi-beryllium \
   linux-beryllium \
   linux-beryllium-headers
 yes | pacman -Scc
@@ -243,7 +240,11 @@ systemctl enable rmtfs
 systemctl enable pd-mapper
 systemctl enable first_time_setup
 
-$POST_SCRIPT
+cp -r /etc/skel/. /home/alarm/
+cp -r /etc/xdg/. /home/alarm/.config/
+rm /home/alarm/.config/systemd/user # Broken symlink that's not needed
+
+chown alarm:alarm /home/alarm/ -R
 
 pacman -Q | cut -f 1 -d " " | sed "s/-git$//" > /packages
 EOF
@@ -260,7 +261,7 @@ function rebuild_kernel_ramdisk_bootimg() {
 set -ex
 
 pacman -Syu --noconfirm --overwrite=* \
-  firmware-xiaomi-beryllium-git \
+  firmware-xiaomi-beryllium \
   linux-beryllium \
   linux-beryllium-headers
 EOF
