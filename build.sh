@@ -8,7 +8,7 @@ fi
 
 if [ "$1" = "barebone" ]; then
   IMAGE_NAME="barebone"
-  IMAGE_SIZE=3072
+  IMAGE_SIZE=$((1024 * 2))
 
 elif [ "$1" = "barebone-bootimg" ]; then
   IMAGE_NAME="barebone"
@@ -16,12 +16,12 @@ elif [ "$1" = "barebone-bootimg" ]; then
 
 elif [ "$1" = "phosh" ]; then
   IMAGE_NAME="phosh"
-  IMAGE_SIZE=4096
+  IMAGE_SIZE=$((1024 * 4))
 
 elif [ "$1" = "phosh-apps" ]; then
   IMAGE_NAME="phosh"
   INCLUDE_APPS=1
-  IMAGE_SIZE=5120
+  IMAGE_SIZE=$((1024 * 4))
 
 elif [ "$1" = "phosh-bootimg" ]; then
   IMAGE_NAME="phosh"
@@ -29,12 +29,12 @@ elif [ "$1" = "phosh-bootimg" ]; then
 
 elif [ "$1" = "plasma-mobile" ]; then
   IMAGE_NAME="plasma-mobile"
-  IMAGE_SIZE=5120
+  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "plasma-mobile-apps" ]; then
   IMAGE_NAME="plasma-mobile"
   INCLUDE_APPS=1
-  IMAGE_SIZE=5120
+  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "plasma-mobile-bootimg" ]; then
   IMAGE_NAME="plasma-mobile"
@@ -42,12 +42,12 @@ elif [ "$1" = "plasma-mobile-bootimg" ]; then
 
 elif [ "$1" = "lomiri" ]; then
   IMAGE_NAME="lomiri"
-  IMAGE_SIZE=6144
+  IMAGE_SIZE=$((1024 * 6))
 
 elif [ "$1" = "lomiri-apps" ]; then
   IMAGE_NAME="lomiri"
   INCLUDE_APPS=1
-  IMAGE_SIZE=6144
+  IMAGE_SIZE=$((1024 * 6))
 
 elif [ "$1" = "lomiri-bootimg" ]; then
   IMAGE_NAME="lomiri"
@@ -115,7 +115,9 @@ do_chroot() {
   chroot "$DEST" mount -t proc proc /proc || true
   chroot "$DEST" mount -t sysfs sys /sys || true
   chroot "$DEST" mount -t tmpfs none /tmp || true
+  chroot "$DEST" mount -t tmpfs none /var/cache/pacman/pkg || true
   chroot "$DEST" "$cmd"
+  chroot "$DEST" umount /var/cache/pacman/pkg || true
   chroot "$DEST" umount /tmp || true
   chroot "$DEST" umount /sys || true
   chroot "$DEST" umount /proc || true
@@ -183,7 +185,6 @@ set -ex
 pacman -Syy
 pacman -Rdd --noconfirm linux-aarch64 linux-firmware # Don't upgrade kernel and firmware which we will remove later anyway
 pacman -Su --noconfirm --overwrite=*
-yes | pacman -Scc
 pacman -S --noconfirm --needed --overwrite=* \
   f2fs-tools \
   bluez \
@@ -202,10 +203,8 @@ pacman -S --noconfirm --needed --overwrite=* \
   wpa_supplicant \
   sudo \
   xdg-user-dirs
-yes | pacman -Scc
 if [ ${#EXTRA_INSTALL_PACKAGES[@]} -ne 0 ]; then
   pacman -S --noconfirm --needed --overwrite=* $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
-  yes | pacman -Scc
 fi
 if [ ${#EXTRA_UNINSTALL_PACKAGES[@]} -ne 0 ]; then
   pacman -Rdd --noconfirm $(printf " %s" "${EXTRA_UNINSTALL_PACKAGES[@]}")
@@ -217,7 +216,6 @@ pacman -S --noconfirm --needed --overwrite=* \
   firmware-xiaomi-beryllium \
   linux-beryllium \
   linux-beryllium-headers
-yes | pacman -Scc
 
 usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
