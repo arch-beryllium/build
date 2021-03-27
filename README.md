@@ -1,9 +1,6 @@
 # Arch Linux on beryllium (Xiaomi Poco F1)
 
-My efforts to run Arch Linux natively (no [Halium](https://halium.org)) on the Poco F1.  
-I only created this script (yet), but the most effort comes from the people working
-on https://gitlab.com/sdm845-mainline/sdm845-linux.  
-Currently, you can only boot from the SD card or using QEMU, but support for internal memory will be coming.
+Run Arch Linux natively on your Poco F1 without [Halium](https://halium.org).
 
 # Building
 
