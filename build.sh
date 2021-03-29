@@ -271,7 +271,8 @@ EOF
 function extract_kernel_ramdisk_bootimg() {
   cp "$DEST/boot/Image" "build/$IMAGE_NAME-Image"
   cp "$DEST/boot/initramfs-linux.img" "build/$IMAGE_NAME-initramfs.img"
-  cp "$DEST/boot/boot.img" "build/$IMAGE_NAME-boot.img"
+  cp "$DEST/boot/boot-tianma.img" "build/$IMAGE_NAME-boot-tianma.img"
+  cp "$DEST/boot/boot-ebbg.img" "build/$IMAGE_NAME-boot-ebbg.img"
 }
 
 if [ -n "$ONLY_BOOTIMG" ]; then

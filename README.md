@@ -2,6 +2,12 @@
 
 Run Arch Linux natively on your Poco F1 without [Halium](https://halium.org).
 
+# Config
+
+Available image names are: `barebone`, `phosh`, `plasma-mobile`, `lomiri`  
+Available panel types are: `tianma`, `ebbg`  
+Please use those values for `<image name>` and `<panel type>`
+
 # Building
 
 To speed up package downloads you can use the `LOCAL_MIRROR` environment variable with and value
@@ -11,26 +17,19 @@ repo).
 Without it, you will probably wait for hours on every build, so it's highly recommended.
 
 ```bash
-./build.sh barebone
-./build.sh phosh
-./build.sh plasma-mobile
-./build.sh lomiri
+./build.sh <image name>
 ```
 
 To include the default apps (probably what you want for non development purposes):
 
 ```bash
-./build.sh phosh-apps
-./build.sh plasma-mobile-apps
-./build.sh lomiri-apps
+./build.sh <image name>-apps
 ```
 
 To only update the kernel, initramfs and boot.img:
 
 ```bash
-./build.sh barebone-bootimg
-./build.sh phosh-bootimg
-./build.sh plasma-mobile-bootimg
+./build.sh <image-name>-bootimg
 ```
 
 # Flashing onto SD card
@@ -39,10 +38,7 @@ You need at least an 8 GB SD card, but more is better.
 Everything on the SD card will be deleted so watch out what you are doing.
 
 ```bash
-./flash_sdcard.sh barebone /dev/sdX
-./flash_sdcard.sh phosh /dev/sdX
-./flash_sdcard.sh plasma-mobile /dev/sdX
-./flash_sdcard.sh lomiri /dev/sdX
+./flash_sdcard.sh <image name> /dev/sdX
 ```
 
 # Booting
@@ -54,19 +50,13 @@ device after it already booted to bootloader mode).
 To temporarily boot from the SD card use:
 
 ```bash
-./boot.sh barebone
-./boot.sh phosh
-./boot.sh plasma-mobile
-./boot.sh lomiri
+./boot.sh <image name> <panel type>
 ```
 
 To permanently boot from the SD card use:
 
 ```bash
-./flash_boot.sh barebone
-./flash_boot.sh phosh
-./flash_boot.sh plasma-mobile
-./flash_boot.sh lomiri
+./flash_boot.sh <image name> <panel type>
 ```
 
 On the first boot it will take a longer time, because it resizes the rootfs to the full size of the SD card. Please
@@ -102,10 +92,7 @@ sudo route add default gw 10.15.19.100
 You can also run the image in QEMU:
 
 ```bash
-./qemu.sh barebone
-./qemu.sh phosh
-./qemu.sh plasma-mobile
-./qemu.sh lomiri
+./qemu.sh <image name>
 ```
 
 It uses a qcow2 overlay image, so the rootfs won't be changed.  
@@ -127,10 +114,7 @@ The kernel update that is installed in the image won't be used, so you have to _
 the image) it manually:
 
 ```bash
-./build.sh barebone-bootimg
-./build.sh phosh-bootimg
-./build.sh plasma-mobile-bootimg
-./build.sh lomiri-bootimg
+./build.sh <image name>-bootimg
 ```
 
 # Anbox
