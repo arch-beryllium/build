@@ -131,13 +131,6 @@ and then reboot.
 
 # Cross-compiling packages
 
-If you want to cross-compile packages you can use the `makepkg.sh` script.  
-You can pass all flags to the script that makepkg accepts.
-
-## Cross-compiling the kernel packages
-
-```bash
-git clone https://github.com/arch-beryllium/linux-beryllium
-cd linux-beryllium
-/path/to/this/repo/makepkg.sh
-```
+If you want to cross-compile packages, you can use the `cross_compile_package.sh` or the `host_compile_package.sh`
+script from the https://github.com/arch-beryllium/beryllium-packages repo. You can pass all flags to the scripts that
+makepkg accepts.
