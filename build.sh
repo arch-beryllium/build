@@ -202,7 +202,8 @@ pacman -S --noconfirm --needed --overwrite=* \
   networkmanager \
   wpa_supplicant \
   sudo \
-  xdg-user-dirs
+  xdg-user-dirs \
+  mesa-git
 if [ ${#EXTRA_INSTALL_PACKAGES[@]} -ne 0 ]; then
   pacman -S --noconfirm --needed --overwrite=* $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
 fi
