@@ -21,7 +21,7 @@ elif [ "$1" = "phosh" ]; then
 elif [ "$1" = "phosh-apps" ]; then
   IMAGE_NAME="phosh"
   INCLUDE_APPS=1
-  IMAGE_SIZE=$((1024 * 4))
+  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "phosh-bootimg" ]; then
   IMAGE_NAME="phosh"
