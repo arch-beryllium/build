@@ -102,7 +102,7 @@ cleanup() {
   if [ -e "$DEST" ]; then
     rm -rf "$DEST" || true
   fi
-  if [ -e "$LOOP_DEVICE"p1 ]; then
+  if losetup -l | grep -q "$LOOP_DEVICE"; then
     losetup -d "$LOOP_DEVICE" || true
   fi
 }
@@ -136,22 +136,9 @@ function download_sources() {
 function setup_clean_rootfs() {
   rm -f "$ROOTFSIMG"
   fallocate -l "${IMAGE_SIZE}"M "$ROOTFSIMG"
-  cat <<EOF | fdisk "$ROOTFSIMG"
-o
-n
-p
-
-
-
-t
-83
-a
-w
-EOF
-
   losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
-  mkfs.f2fs -l ALARM "${LOOP_DEVICE}"p1
-  mount "${LOOP_DEVICE}"p1 "$DEST"
+  mkfs.ext4 -L ALARM "${LOOP_DEVICE}"
+  mount "${LOOP_DEVICE}" "$DEST"
 }
 
 function setup_dirty_rootfs() {
@@ -161,7 +148,7 @@ function setup_dirty_rootfs() {
     exit 1
   fi
   losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
-  mount "${LOOP_DEVICE}"p1 "$DEST"
+  mount "${LOOP_DEVICE}" "$DEST"
 }
 
 function build_rootfs() {
@@ -254,6 +241,8 @@ EOF
 }
 
 function rebuild_kernel_ramdisk_bootimg() {
+  cp overlay/* "$DEST" -r
+
   cat >"$DEST/rebuild" <<EOF
 #!/bin/bash
 set -ex

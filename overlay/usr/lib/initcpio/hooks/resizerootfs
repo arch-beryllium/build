@@ -6,23 +6,9 @@ run_hook() {
   fi
 
   # shellcheck disable=SC2154
-  device=$(resolve_device "$root" | sed 's/..$//')
-  start=$(fdisk -l "${device}" | grep "${device}"p1 | sed 's/*//' | awk '{print $2}')
-
-  fdisk "${device}" <<EOF
-p
-d
-
-n
-p
-
-$start
-
-w
-EOF
-
-  partx -u "${device}"
-  resize.f2fs "${device}"p1
+  device=$(resolve_device "$root")
+  e2fsck -fy "${device}"
+  resize2fs "${device}"
 
   if [ -e /sys/devices/platform/bootsplash.0/enabled ]; then
     echo 1 >/sys/devices/platform/bootsplash.0/enabled
