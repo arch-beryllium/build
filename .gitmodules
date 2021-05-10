@@ -1,0 +1,3 @@
+[submodule "installer"]
+	path = installer
+	url = git@gitlab.com:sdm845-mainline/pmos-installer.git

@@ -41,19 +41,44 @@ Everything on the SD card will be deleted so watch out what you are doing.
 ./flash_sdcard.sh <image name> /dev/sdX
 ```
 
+# Pushing the rootfs to the internal storage
+
+_It's better to use the installer method._  
+This will not overwrite anything (except an old rootfs image maybe).
+
+```bash
+./push_userdata.sh <image name>
+```
+
+# Creating an TWRP zip installer
+
+This basically does the same as pushing the rootfs on the userdata partition and flashing the boot partition, but in a
+much more user-friendly way.  
+It should be the standard way to distribute Arch Linux on beryllium to end users. When using this installer the boot
+partition gets flashed automatically, so be aware of this. It also means you can skip flashing the boot partition
+manually and directly boot it.
+
+```bash
+./make_installer.sh <image name> <panel type>
+adb push build/<image name>-installer-<panel type>.zip /sdcard
+```
+
+In TWRP just install the zip as usual (You can also
+use `adb shell twrp install /sdcard/<image name>-installer-<panel type>.zip`)
+
 # Booting
 
 Put the SD card into the device.  
 Boot the device to bootloader mode (you might need to reboot it once to bootloader mode if you put the SD card into the
 device after it already booted to bootloader mode).
 
-To temporarily boot from the SD card use:
+To temporarily boot use:
 
 ```bash
 ./boot.sh <image name> <panel type>
 ```
 
-To permanently boot from the SD card use:
+To permanently boot use:
 
 ```bash
 ./flash_boot.sh <image name> <panel type>
