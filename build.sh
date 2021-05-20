@@ -184,6 +184,7 @@ pacman -S --noconfirm --needed --overwrite=* \
   alsa-ucm-beryllium \
   qrtr-git \
   tqftpserv-git \
+  reboot-mode \
   rmtfs-git \
   pd-mapper-git \
   iw \
