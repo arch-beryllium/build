@@ -181,6 +181,7 @@ pacman -S --noconfirm --needed --overwrite=* \
   alsa-utils \
   wireless-regdb \
   usb-tethering \
+  usb-file-transfer \
   alsa-ucm-beryllium \
   qrtr-git \
   tqftpserv-git \

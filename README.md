@@ -112,6 +112,11 @@ Device side:
 sudo route add default gw 10.15.19.100
 ```
 
+# USB file transfer
+
+This exposes `/` and any SD card that is not mounted at `/` to other devices as mass storage.  
+To enable run `sudo usb-file-transfer`.
+
 # QEMU
 
 You can also run the image in QEMU:
