@@ -8,7 +8,6 @@ fi
 
 if [ "$1" = "barebone" ]; then
   IMAGE_NAME="barebone"
-  IMAGE_SIZE=$((1024 * 2))
 
 elif [ "$1" = "barebone-bootimg" ]; then
   IMAGE_NAME="barebone"
@@ -16,12 +15,10 @@ elif [ "$1" = "barebone-bootimg" ]; then
 
 elif [ "$1" = "phosh" ]; then
   IMAGE_NAME="phosh"
-  IMAGE_SIZE=$((1024 * 4))
 
 elif [ "$1" = "phosh-apps" ]; then
   IMAGE_NAME="phosh"
   INCLUDE_APPS=1
-  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "phosh-bootimg" ]; then
   IMAGE_NAME="phosh"
@@ -29,12 +26,10 @@ elif [ "$1" = "phosh-bootimg" ]; then
 
 elif [ "$1" = "plasma-mobile" ]; then
   IMAGE_NAME="plasma-mobile"
-  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "plasma-mobile-apps" ]; then
   IMAGE_NAME="plasma-mobile"
   INCLUDE_APPS=1
-  IMAGE_SIZE=$((1024 * 5))
 
 elif [ "$1" = "plasma-mobile-bootimg" ]; then
   IMAGE_NAME="plasma-mobile"
@@ -42,12 +37,10 @@ elif [ "$1" = "plasma-mobile-bootimg" ]; then
 
 elif [ "$1" = "lomiri" ]; then
   IMAGE_NAME="lomiri"
-  IMAGE_SIZE=$((1024 * 6))
 
 elif [ "$1" = "lomiri-apps" ]; then
   IMAGE_NAME="lomiri"
   INCLUDE_APPS=1
-  IMAGE_SIZE=$((1024 * 6))
 
 elif [ "$1" = "lomiri-bootimg" ]; then
   IMAGE_NAME="lomiri"
@@ -83,7 +76,7 @@ ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
 
 mkdir -p build
 
-cleanup() {
+unmount() {
   if [ -e "$DEST/proc" ] && mountpoint "$DEST/proc" >/dev/null; then
     umount "$DEST/proc" || true
   fi
@@ -102,9 +95,17 @@ cleanup() {
   if [ -e "$DEST" ]; then
     rm -rf "$DEST" || true
   fi
+}
+
+function destroy_loop_device() {
   if losetup -l | grep -q "$LOOP_DEVICE"; then
     losetup -d "$LOOP_DEVICE" || true
   fi
+}
+
+cleanup() {
+  unmount
+  destroy_loop_device
 }
 trap cleanup EXIT
 
@@ -135,7 +136,7 @@ function download_sources() {
 
 function setup_clean_rootfs() {
   rm -f "$ROOTFSIMG"
-  fallocate -l "${IMAGE_SIZE}"M "$ROOTFSIMG"
+  fallocate -l 6G "$ROOTFSIMG"
   losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
   mkfs.ext4 -L ALARM "${LOOP_DEVICE}"
   mount "${LOOP_DEVICE}" "$DEST"
@@ -264,6 +265,15 @@ function extract_kernel_ramdisk_bootimg() {
   cp "$DEST/boot/boot-ebbg.img" "build/$IMAGE_NAME-boot-ebbg.img"
 }
 
+function shrink_rootfs() {
+  unmount
+  e2fsck -fy "$LOOP_DEVICE"
+  resize2fs -M "$LOOP_DEVICE"
+  destroy_loop_device
+  e2fsck -fy $ROOTFSIMG
+  resize2fs -M $ROOTFSIMG
+}
+
 if [ -n "$ONLY_BOOTIMG" ]; then
   setup_dirty_rootfs
   rebuild_kernel_ramdisk_bootimg
@@ -275,4 +285,4 @@ fi
 
 extract_kernel_ramdisk_bootimg
 
-cleanup
+shrink_rootfs
