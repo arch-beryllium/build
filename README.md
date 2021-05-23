@@ -2,6 +2,12 @@
 
 Run Arch Linux natively on your Poco F1 without [Halium](https://halium.org).
 
+# Community
+
+As more people are trying Arch Linux ARM on Poco F1, I see the need for a group to exchange and bug reports and help in
+general. The group can be reached under the bridged rooms https://matrix.to/#/#arch-beryllium:matrix.org
+and https://t.me/arch_beryllium.
+
 # Config
 
 Available image names are: `barebone`, `phosh`, `plasma-mobile`, `lomiri`  
