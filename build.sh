@@ -136,7 +136,7 @@ function download_sources() {
 
 function setup_clean_rootfs() {
   rm -f "$ROOTFSIMG"
-  fallocate -l 6G "$ROOTFSIMG"
+  fallocate -l 7G "$ROOTFSIMG"
   losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
   mkfs.ext4 -L ALARM "${LOOP_DEVICE}"
   mount "${LOOP_DEVICE}" "$DEST"
@@ -171,7 +171,7 @@ function build_rootfs() {
 set -ex
 
 pacman -Syy
-pacman -Rdd --noconfirm linux-aarch64 linux-firmware # Don't upgrade kernel and firmware which we will remove later anyway
+pacman -Rdd --noconfirm linux-aarch64 # Don't upgrade kernel which we will remove later anyway
 pacman -Su --noconfirm --overwrite=*
 pacman -S --noconfirm --needed --overwrite=* \
   f2fs-tools \
