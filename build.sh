@@ -192,7 +192,8 @@ pacman -S --noconfirm --needed --overwrite=* \
   networkmanager \
   wpa_supplicant \
   sudo \
-  xdg-user-dirs
+  xdg-user-dirs \
+  glibc-locales
 if [ ${#EXTRA_INSTALL_PACKAGES[@]} -ne 0 ]; then
   pacman -S --noconfirm --needed --overwrite=* $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
 fi
@@ -210,13 +211,6 @@ pacman -S --noconfirm --needed --overwrite=* \
 usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 echo "alarm:123456" | chpasswd
-
-sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
-cd /usr/share/i18n/charmaps
-gzip -d UTF-8.gz
-locale-gen
-gzip UTF-8
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 systemctl enable sshd
 systemctl enable usb-tethering
