@@ -2,47 +2,20 @@
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: build.sh <target>"
-  echo "Targets: barebone, phosh, phosh-apps, plasma-mobile, plasma-mobile-apps, lomiri, lomiri-apps"
+  echo "Targets: barebone, phosh, plasma-mobile, lomiri"
   exit 1
 fi
 
-if [ "$1" = "barebone" ]; then
-  IMAGE_NAME="barebone"
-
-elif [ "$1" = "phosh" ]; then
-  IMAGE_NAME="phosh"
-
-elif [ "$1" = "phosh-apps" ]; then
-  IMAGE_NAME="phosh"
-  INCLUDE_APPS=1
-
-elif [ "$1" = "plasma-mobile" ]; then
-  IMAGE_NAME="plasma-mobile"
-
-elif [ "$1" = "plasma-mobile-apps" ]; then
-  IMAGE_NAME="plasma-mobile"
-  INCLUDE_APPS=1
-
-elif [ "$1" = "lomiri" ]; then
-  IMAGE_NAME="lomiri"
-
-elif [ "$1" = "lomiri-apps" ]; then
-  IMAGE_NAME="lomiri"
-  INCLUDE_APPS=1
-
+if [ "$1" = "barebone" ] || [ "$1" = "phosh" ] || [ "$1" = "plasma-mobile" ] || [ "$1" = "lomiri" ]; then
+  IMAGE_NAME="$1"
 else
   echo "Unknown target: $*"
   exit 1
 fi
 
 EXTRA_INSTALL_PACKAGES=()
-EXTRA_UNINSTALL_PACKAGES=()
 if [ "$IMAGE_NAME" != "barebone" ]; then
   EXTRA_INSTALL_PACKAGES+=("ui-$IMAGE_NAME-meta" "tweaks-$IMAGE_NAME" "tweaks-desktop-files" "bootsplash")
-fi
-if [ -n "$INCLUDE_APPS" ]; then
-  EXTRA_INSTALL_PACKAGES+=("apps-$IMAGE_NAME-meta")
-  EXTRA_UNINSTALL_PACKAGES+=("apps-$IMAGE_NAME-meta")
 fi
 
 if [ "$(id -u)" -ne "0" ]; then
@@ -148,9 +121,6 @@ set -ex
 
 pacman -Rdd --noconfirm linux-aarch64 # Don't upgrade kernel which we will remove later anyway
 pacman -Syyu --noconfirm --needed --overwrite=* base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
-if [ ${#EXTRA_UNINSTALL_PACKAGES[@]} -ne 0 ]; then
-  pacman -Rdd --noconfirm $(printf " %s" "${EXTRA_UNINSTALL_PACKAGES[@]}")
-fi
 
 usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
 echo "alarm:123456" | chpasswd

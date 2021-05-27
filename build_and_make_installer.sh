@@ -7,4 +7,4 @@ if [ "$#" -ne 2 ]; then
 fi
 
 source build.sh "$1"
-source make_installer.sh "${1//-apps/}" "$2"
+source make_installer.sh "$1" "$2"

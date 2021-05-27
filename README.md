@@ -26,12 +26,6 @@ Without it, you will probably wait for hours on every build, so it's highly reco
 ./build.sh <image name>
 ```
 
-To include the default apps (probably what you want for non development purposes):
-
-```bash
-./build.sh <image name>-apps
-```
-
 # Flashing onto SD card
 
 You need at least an 8 GB SD card, but more is better.  
@@ -116,6 +110,11 @@ sudo route add default gw 10.15.19.100
 
 This exposes `/` and any SD card that is not mounted at `/` to other devices as mass storage.  
 To enable run `sudo usb-file-transfer`.
+
+# Default apps
+
+Usually only a terminal app and a software store will be installed by default. To install a set of default apps
+install `apps-<image name>-meta` manually.
 
 # QEMU
 
