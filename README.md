@@ -32,12 +32,6 @@ To include the default apps (probably what you want for non development purposes
 ./build.sh <image name>-apps
 ```
 
-To only update the kernel, initramfs and boot.img:
-
-```bash
-./build.sh <image-name>-bootimg
-```
-
 # Flashing onto SD card
 
 You need at least an 8 GB SD card, but more is better.  
@@ -141,17 +135,11 @@ automatically opens a console for you.
 
 When you flash the boot.img permanently, every kernel update on the device will flash the new boot.img onto the boot
 partition that is generated.  
-If you booted temporarily from a boot.img then the new boot.img won't be flashed onto the boot partition.  
-To still use the new kernel, update the boot.img with the instructions from the QEMU section below.
+If you booted temporarily from a boot.img then the new boot.img won't be flashed onto the boot partition.
 
 ## QEMU
 
-The kernel update that is installed in the image won't be used, so you have to _build_ (actually just extracts it from
-the image) it manually:
-
-```bash
-./build.sh <image name>-bootimg
-```
+The kernel update that is installed in the image won't be used, so you have to rebuild the image.
 
 # Anbox
 

@@ -2,16 +2,12 @@
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: build.sh <target>"
-  echo "Targets: barebone, phosh, phosh-apps, phosh-bootimg, plasma-mobile, plasma-mobile-apps, plasma-mobile-bootimg, lomiri, lomiri-apps, lomiri-bootimg"
+  echo "Targets: barebone, phosh, phosh-apps, plasma-mobile, plasma-mobile-apps, lomiri, lomiri-apps"
   exit 1
 fi
 
 if [ "$1" = "barebone" ]; then
   IMAGE_NAME="barebone"
-
-elif [ "$1" = "barebone-bootimg" ]; then
-  IMAGE_NAME="barebone"
-  ONLY_BOOTIMG=1
 
 elif [ "$1" = "phosh" ]; then
   IMAGE_NAME="phosh"
@@ -20,10 +16,6 @@ elif [ "$1" = "phosh-apps" ]; then
   IMAGE_NAME="phosh"
   INCLUDE_APPS=1
 
-elif [ "$1" = "phosh-bootimg" ]; then
-  IMAGE_NAME="phosh"
-  ONLY_BOOTIMG=1
-
 elif [ "$1" = "plasma-mobile" ]; then
   IMAGE_NAME="plasma-mobile"
 
@@ -31,20 +23,12 @@ elif [ "$1" = "plasma-mobile-apps" ]; then
   IMAGE_NAME="plasma-mobile"
   INCLUDE_APPS=1
 
-elif [ "$1" = "plasma-mobile-bootimg" ]; then
-  IMAGE_NAME="plasma-mobile"
-  ONLY_BOOTIMG=1
-
 elif [ "$1" = "lomiri" ]; then
   IMAGE_NAME="lomiri"
 
 elif [ "$1" = "lomiri-apps" ]; then
   IMAGE_NAME="lomiri"
   INCLUDE_APPS=1
-
-elif [ "$1" = "lomiri-bootimg" ]; then
-  IMAGE_NAME="lomiri"
-  ONLY_BOOTIMG=1
 
 else
   echo "Unknown target: $*"
@@ -142,16 +126,6 @@ function setup_clean_rootfs() {
   mount "${LOOP_DEVICE}" "$DEST"
 }
 
-function setup_dirty_rootfs() {
-  if [ ! -f "$ROOTFSIMG" ]; then
-    echo "You need to already have built a rootfs to use it"
-    echo "Run build_phosh.sh or build_plasma_mobile.sh first"
-    exit 1
-  fi
-  losetup -P "$LOOP_DEVICE" "$ROOTFSIMG"
-  mount "${LOOP_DEVICE}" "$DEST"
-}
-
 function build_rootfs() {
   tar --use-compress-program=pigz --same-owner -xpf "$TARBALL" -C "$DEST"
 
@@ -196,21 +170,6 @@ EOF
   mv "$DEST/packages" "build/$IMAGE_NAME-packages.txt"
 }
 
-function rebuild_kernel_ramdisk_bootimg() {
-  cat >"$DEST/rebuild" <<EOF
-#!/bin/bash
-set -ex
-
-pacman -Syu --noconfirm --overwrite=* \
-  firmware-xiaomi-beryllium \
-  linux-beryllium \
-  linux-beryllium-headers
-EOF
-  chmod +x "$DEST/rebuild"
-  do_chroot /rebuild
-  rm "$DEST/rebuild"
-}
-
 function extract_kernel_ramdisk_bootimg() {
   cp "$DEST/boot/Image" "build/$IMAGE_NAME-Image"
   cp "$DEST/boot/initramfs-linux.img" "build/$IMAGE_NAME-initramfs.img"
@@ -237,15 +196,9 @@ function setup_qemu() {
 
 setup_qemu
 
-if [ -n "$ONLY_BOOTIMG" ]; then
-  setup_dirty_rootfs
-  rebuild_kernel_ramdisk_bootimg
-else
-  download_sources
-  setup_clean_rootfs
-  build_rootfs
-fi
-
+download_sources
+setup_clean_rootfs
+build_rootfs
 extract_kernel_ramdisk_bootimg
 
 shrink_rootfs
