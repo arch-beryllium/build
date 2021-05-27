@@ -1,8 +1,0 @@
-[Unit]
-Description=First Time Setup
-
-[Service]
-ExecStart=/opt/first_time_setup.sh
-
-[Install]
-WantedBy=multi-user.target

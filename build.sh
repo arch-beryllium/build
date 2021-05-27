@@ -155,9 +155,7 @@ function setup_dirty_rootfs() {
 function build_rootfs() {
   tar --use-compress-program=pigz --same-owner -xpf "$TARBALL" -C "$DEST"
 
-  rm -rf "$DEST/etc/resolv.conf"
-
-  cp overlay/* "$DEST" -r
+  cp pacman.conf "$DEST/etc/pacman.conf"
 
   if [ -n "$LOCAL_MIRROR" ]; then
     cp "$DEST/etc/pacman.conf" "$DEST/etc/pacman.conf.bak"
@@ -166,61 +164,22 @@ function build_rootfs() {
     printf "Server = %s" "$LOCAL_MIRROR" >"$DEST/etc/pacman.d/mirrorlist"
   fi
 
+  if [ "$IMAGE_NAME" != "barebone" ]; then
+    sed -i 's/fsck)/fsck bootsplash)/' "$DEST/etc/mkinitcpio.conf"
+  fi
+
   cat >"$DEST/install" <<EOF
 #!/bin/bash
 set -ex
 
-pacman -Syy
 pacman -Rdd --noconfirm linux-aarch64 # Don't upgrade kernel which we will remove later anyway
-pacman -Su --noconfirm --overwrite=*
-pacman -S --noconfirm --needed --overwrite=* \
-  f2fs-tools \
-  bluez \
-  bluez-libs \
-  bluez-utils \
-  alsa-utils \
-  wireless-regdb \
-  usb-tethering \
-  usb-file-transfer \
-  alsa-ucm-beryllium \
-  qrtr-git \
-  tqftpserv-git \
-  reboot-mode \
-  rmtfs-git \
-  pd-mapper-git \
-  iw \
-  networkmanager \
-  wpa_supplicant \
-  sudo \
-  xdg-user-dirs \
-  glibc-locales
-if [ ${#EXTRA_INSTALL_PACKAGES[@]} -ne 0 ]; then
-  pacman -S --noconfirm --needed --overwrite=* $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
-fi
+pacman -Syyu --noconfirm --needed --overwrite=* base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
 if [ ${#EXTRA_UNINSTALL_PACKAGES[@]} -ne 0 ]; then
   pacman -Rdd --noconfirm $(printf " %s" "${EXTRA_UNINSTALL_PACKAGES[@]}")
 fi
-if [ "$IMAGE_NAME" != "barebone" ]; then
-  sed -i 's/fsck)/fsck bootsplash)/' /etc/mkinitcpio.conf
-fi
-pacman -S --noconfirm --needed --overwrite=* \
-  firmware-xiaomi-beryllium \
-  linux-beryllium \
-  linux-beryllium-headers
 
 usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
-sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 echo "alarm:123456" | chpasswd
-
-systemctl enable sshd
-systemctl enable usb-tethering
-systemctl enable NetworkManager
-systemctl enable bluetooth
-systemctl enable qrtr-ns
-systemctl enable tqftpserv
-systemctl enable rmtfs
-systemctl enable pd-mapper
-systemctl enable first_time_setup
 
 cp -r /etc/skel/. /home/alarm/
 cp -r /etc/xdg/. /home/alarm/.config/
@@ -238,8 +197,6 @@ EOF
 }
 
 function rebuild_kernel_ramdisk_bootimg() {
-  cp overlay/* "$DEST" -r
-
   cat >"$DEST/rebuild" <<EOF
 #!/bin/bash
 set -ex
