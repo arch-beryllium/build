@@ -276,6 +276,16 @@ function shrink_rootfs() {
   resize2fs -M $ROOTFSIMG
 }
 
+function setup_qemu() {
+  # Remove current configuration
+  if [ -f /proc/sys/fs/binfmt_misc/qemu-aarch64 ]; then
+    echo -1 >/proc/sys/fs/binfmt_misc/qemu-aarch64
+  fi
+  echo ':qemu-aarch64:M:0:\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64-static:CF' >/proc/sys/fs/binfmt_misc/register
+}
+
+setup_qemu
+
 if [ -n "$ONLY_BOOTIMG" ]; then
   setup_dirty_rootfs
   rebuild_kernel_ramdisk_bootimg
