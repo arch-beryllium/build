@@ -14,4 +14,4 @@ fi
 set -ex
 
 cd installer
-NO_PMB=1 ./makeinstaller.sh -a -p sda21 -c "../build/$1-boot-$2.img" -i "../build/$1-rootfs.img" -u "$1" -d beryllium -o "ALARM" -v rolling -b "$(realpath "../build/$1-installer-$2.zip")"
+NO_PMB=1 ./makeinstaller.sh -a -p sda21 -c "../build/$1-boot-$2.img" -i "../build/$1-rootfs-minimal.img" -u "$1" -d beryllium -o "ALARM" -v rolling -b "$(realpath "../build/$1-installer-$2.zip")"

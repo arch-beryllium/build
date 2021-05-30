@@ -28,6 +28,7 @@ set -ex
 DEST=$(mktemp -d)
 TMP=$(mktemp -d)
 ROOTFSIMG="build/$IMAGE_NAME-rootfs.img"
+MINIMALROOTFSIMG="build/$IMAGE_NAME-rootfs-minimal.img"
 
 mkdir -p build
 
@@ -44,10 +45,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
-function setup_clean_rootfs() {
-  rm -f "$ROOTFSIMG"
-  fallocate -l 7G "$ROOTFSIMG"
-  mkfs.ext4 -L ALARM "$ROOTFSIMG"
+function setup_rootfs() {
+  if [ ! -f "$ROOTFSIMG" ]; then
+    fallocate -l 5G "$ROOTFSIMG"
+    mkfs.ext4 -L ALARM "$ROOTFSIMG"
+  fi
   mount -o loop "$ROOTFSIMG" "$DEST"
 }
 
@@ -71,7 +73,7 @@ function build_rootfs() {
     -v "$TMP/mirrorlist":/etc/pacman.d/mirrorlist \
     -v "$DEST":/newroot:z \
     archlinux:pacstrap \
-    pacstrap -c -G -M /newroot base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}")
+    pacstrap -c -G -M /newroot base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}") --needed
 
   cp "$TMP/pacman.conf"* "$DEST/etc/"
   cp "$TMP/mirrorlist"* "$DEST/etc/pacman.d/"
@@ -81,8 +83,12 @@ function build_rootfs() {
     -v "$DEST":/newroot:z \
     archlinux:pacstrap \
     arch-chroot /newroot <<EOF
-useradd -m -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
+if ! id -u "alarm" >/dev/null 2>&1; then
+  useradd -m alarm
+fi
+usermod -a -G network,video,audio,optical,storage,input,scanner,games,lp,rfkill,wheel alarm
 echo "alarm:123456" | chpasswd
+chown alarm:alarm /home/alarm -R
 EOF
 }
 
@@ -94,8 +100,9 @@ function extract_kernel_ramdisk_bootimg() {
 }
 
 function shrink_rootfs() {
-  e2fsck -fy "$ROOTFSIMG"
-  resize2fs -M "$ROOTFSIMG"
+  cp "$ROOTFSIMG" "$MINIMALROOTFSIMG"
+  e2fsck -fy "$MINIMALROOTFSIMG"
+  resize2fs -M "$MINIMALROOTFSIMG"
 }
 
 function setup_qemu() {
@@ -108,7 +115,7 @@ function setup_qemu() {
 
 setup_qemu
 
-setup_clean_rootfs
+setup_rootfs
 build_rootfs
 extract_kernel_ramdisk_bootimg
 

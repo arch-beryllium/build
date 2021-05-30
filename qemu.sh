@@ -13,6 +13,7 @@ fi
 set -ex
 
 if [ ! -f "build/$1-qemu.cow" ]; then
+  # Don't use minimal image because it has less disk space
   qemu-img create -o "backing_file=$1-rootfs.img,backing_fmt=raw" -f qcow2 "build/$1-qemu.cow"
 fi
 

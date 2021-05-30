@@ -10,4 +10,4 @@ if [ "$(id -u)" -ne "0" ]; then
   exit 1
 fi
 
-dd if="./build/$1-rootfs.img" of="$2" status=progress iflag=direct oflag=direct bs=10M
+dd if="./build/$1-rootfs-minimal.img" of="$2" status=progress iflag=direct oflag=direct bs=10M
