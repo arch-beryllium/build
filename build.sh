@@ -73,7 +73,7 @@ function build_rootfs() {
     -v "$TMP/mirrorlist":/etc/pacman.d/mirrorlist \
     -v "$DEST":/newroot:z \
     archlinux:pacstrap \
-    pacstrap -c -G -M /newroot base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}") --needed
+    pacstrap -c -G -M /newroot base base-beryllium $(printf " %s" "${EXTRA_INSTALL_PACKAGES[@]}") --needed --overwrite=* -yu
 
   cp "$TMP/pacman.conf"* "$DEST/etc/"
   cp "$TMP/mirrorlist"* "$DEST/etc/pacman.d/"
