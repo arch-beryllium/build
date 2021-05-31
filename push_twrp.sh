@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ "$#" -ne 1 ]; then
-  echo "Usage: push_userdata.sh <image name>"
+  echo "Usage: push_twrp.sh <image name>"
   echo "Image names: barebone, phosh, plasma-mobile, lomiri"
   exit 1
 fi

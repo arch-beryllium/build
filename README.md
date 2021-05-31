@@ -26,7 +26,9 @@ Without it, you will probably wait for hours on every build, so it's highly reco
 ./build.sh <image name>
 ```
 
-# Flashing onto SD card
+## Copying the rootfs to a bootable location
+
+### Flashing onto SD card
 
 You need at least an 8 GB SD card, but more is better.  
 Everything on the SD card will be deleted so watch out what you are doing.
@@ -35,22 +37,33 @@ Everything on the SD card will be deleted so watch out what you are doing.
 ./flash_sdcard.sh <image name> /dev/sdX
 ```
 
-# Pushing the rootfs to the internal storage
+### Using Jumpdrive
+
+Download `boot-xiaomi-beryllium-<panel type>.img` from https://github.com/dreemurrs-embedded/Jumpdrive/releases/latest.
+Go to bootloader mode and boot it using `fastboot boot boot-xiaomi-beryllium-<panel type>.img`.  
+When it booted you should see a splashscreen and some USB mass storage device exposed to your computer. If you have an
+SD card inserted it should also be exposed, but make sure to not chose it.  
+Find the device using `fdisk -l` (should show up as 53.51 GiB disk).
+
+```bash
+./push_jumpdrive.sh <image name> /dev/sdX
+```
+
+### Using TWRP
 
 _It's better to use the installer method._  
 This will not overwrite anything (except an old rootfs image maybe).
 
 ```bash
-./push_userdata.sh <image name>
+./push_twrp.sh <image name>
 ```
 
-# Creating an TWRP zip installer
+### Creating an TWRP zip installer
 
 This basically does the same as pushing the rootfs on the userdata partition and flashing the boot partition, but in a
 much more user-friendly way.  
-It should be the standard way to distribute Arch Linux on beryllium to end users. When using this installer the boot
-partition gets flashed automatically, so be aware of this. It also means you can skip flashing the boot partition
-manually and directly boot it.
+When using this installer the boot partition gets flashed automatically, so be aware of this. It also means you can skip
+flashing the boot partition manually and directly boot it.
 
 ```bash
 ./make_installer.sh <image name> <panel type>
