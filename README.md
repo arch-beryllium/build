@@ -62,7 +62,6 @@ use `adb shell twrp install /sdcard/<image name>-installer-<panel type>.zip`)
 
 # Booting
 
-Put the SD card into the device.  
 Boot the device to bootloader mode (you might need to reboot it once to bootloader mode if you put the SD card into the
 device after it already booted to bootloader mode).
 
@@ -78,8 +77,8 @@ To permanently boot use:
 ./flash_boot.sh <image name> <panel type>
 ```
 
-On the first boot it will take a longer time, because it resizes the rootfs to the full size of the SD card. Please
-don't turn it off in that time.
+On the first boot it will take a longer time, because it resizes the rootfs to the full size. Please don't turn it off
+in that time.
 
 # SSHing into the device
 
